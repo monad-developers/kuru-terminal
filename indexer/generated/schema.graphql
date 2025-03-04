@@ -1,0 +1,131 @@
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON
+
+scalar BigInt
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+type Meta {
+  status: JSON
+}
+
+type Query {
+  trade(id: String!): trade
+  trades(where: tradeFilter, orderBy: String, orderDirection: String, before: String, after: String, limit: Int): tradePage!
+  _meta: Meta
+}
+
+type trade {
+  id: String!
+  orderId: BigInt
+  txOrigin: String
+  makerAddress: String
+  takerAddress: String
+  isBuy: Boolean
+  price: BigInt
+  updatedSize: BigInt
+  filledSize: BigInt
+  blockHeight: BigInt
+}
+
+type tradePage {
+  items: [trade!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+input tradeFilter {
+  AND: [tradeFilter]
+  OR: [tradeFilter]
+  id: String
+  id_not: String
+  id_in: [String]
+  id_not_in: [String]
+  id_contains: String
+  id_not_contains: String
+  id_starts_with: String
+  id_ends_with: String
+  id_not_starts_with: String
+  id_not_ends_with: String
+  orderId: BigInt
+  orderId_not: BigInt
+  orderId_in: [BigInt]
+  orderId_not_in: [BigInt]
+  orderId_gt: BigInt
+  orderId_lt: BigInt
+  orderId_gte: BigInt
+  orderId_lte: BigInt
+  txOrigin: String
+  txOrigin_not: String
+  txOrigin_in: [String]
+  txOrigin_not_in: [String]
+  txOrigin_contains: String
+  txOrigin_not_contains: String
+  txOrigin_starts_with: String
+  txOrigin_ends_with: String
+  txOrigin_not_starts_with: String
+  txOrigin_not_ends_with: String
+  makerAddress: String
+  makerAddress_not: String
+  makerAddress_in: [String]
+  makerAddress_not_in: [String]
+  makerAddress_contains: String
+  makerAddress_not_contains: String
+  makerAddress_starts_with: String
+  makerAddress_ends_with: String
+  makerAddress_not_starts_with: String
+  makerAddress_not_ends_with: String
+  takerAddress: String
+  takerAddress_not: String
+  takerAddress_in: [String]
+  takerAddress_not_in: [String]
+  takerAddress_contains: String
+  takerAddress_not_contains: String
+  takerAddress_starts_with: String
+  takerAddress_ends_with: String
+  takerAddress_not_starts_with: String
+  takerAddress_not_ends_with: String
+  isBuy: Boolean
+  isBuy_not: Boolean
+  isBuy_in: [Boolean]
+  isBuy_not_in: [Boolean]
+  price: BigInt
+  price_not: BigInt
+  price_in: [BigInt]
+  price_not_in: [BigInt]
+  price_gt: BigInt
+  price_lt: BigInt
+  price_gte: BigInt
+  price_lte: BigInt
+  updatedSize: BigInt
+  updatedSize_not: BigInt
+  updatedSize_in: [BigInt]
+  updatedSize_not_in: [BigInt]
+  updatedSize_gt: BigInt
+  updatedSize_lt: BigInt
+  updatedSize_gte: BigInt
+  updatedSize_lte: BigInt
+  filledSize: BigInt
+  filledSize_not: BigInt
+  filledSize_in: [BigInt]
+  filledSize_not_in: [BigInt]
+  filledSize_gt: BigInt
+  filledSize_lt: BigInt
+  filledSize_gte: BigInt
+  filledSize_lte: BigInt
+  blockHeight: BigInt
+  blockHeight_not: BigInt
+  blockHeight_in: [BigInt]
+  blockHeight_not_in: [BigInt]
+  blockHeight_gt: BigInt
+  blockHeight_lt: BigInt
+  blockHeight_gte: BigInt
+  blockHeight_lte: BigInt
+}
