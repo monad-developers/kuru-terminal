@@ -23,5 +23,6 @@ type Kuru_Trade {
   takerAddress: String!
   txOrigin: String!
   filledSize: BigInt!
+  blockHeight: Int!
 }
 

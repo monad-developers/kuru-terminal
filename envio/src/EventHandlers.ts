@@ -42,6 +42,7 @@ Kuru.Trade.handler(async ({ event, context }) => {
     takerAddress: event.params.takerAddress,
     txOrigin: event.params.txOrigin,
     filledSize: event.params.filledSize,
+    blockHeight: event.block.number,
   };
 
   context.Kuru_Trade.set(entity);
