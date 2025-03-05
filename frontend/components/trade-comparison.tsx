@@ -1,24 +1,33 @@
 "use client";
 
-import { TradeTable } from "@/components/trade-table";
+import {
+  ENVIO_SUBGRAPH_URL,
+  EnvioSubgraphTrades,
+} from "@/components/envio-subgraph-trades";
+import { PonderDbTrades } from "@/components/ponder-db-trades";
+import {
+  PONDER_SUBGRAPH_URL,
+  PonderSubgraphTrades,
+} from "@/components/ponder-subgraph-trades";
+import {
+  THEGRAPH_SUBGRAPH_URL,
+  TheGraphSubgraphTrades,
+} from "@/components/the-graph-subgraph-trades";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import type { Trade } from "@/db/types";
-import { getTradesFromPostgres } from "@/lib/actions";
-import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 
 enum TAB {
-  GRAPHQL = "graphql",
-  POSTGRES = "postgres",
-  ENVIO = "envio",
-  THEGRAPH = "thegraph",
+  PONDER_SUBGRAPH = "ponder-subgraph",
+  PONDER_DB = "ponder-db",
+  ENVIO_SUBGRAPH = "envio-subgraph",
+  THEGRAPH_SUBGRAPH = "thegraph-subgraph",
 }
 
 export function TradeComparison() {
-  const [activeTab, setActiveTab] = useState<TAB>(TAB.GRAPHQL);
+  const [activeTab, setActiveTab] = useState<TAB>(TAB.PONDER_SUBGRAPH);
   const [refetchInterval, setRefetchInterval] = useState<number>(1000); // ms
   const [enabled, setEnabled] = useState<boolean>(false);
   const [limit, setLimit] = useState<number>(20);
@@ -84,273 +93,96 @@ export function TradeComparison() {
       </CardHeader>
       <CardContent>
         <Tabs
-          defaultValue={TAB.GRAPHQL}
+          defaultValue={TAB.PONDER_SUBGRAPH}
           value={activeTab}
           onValueChange={handleTabChange}
         >
           <div className="flex justify-between items-center mb-4">
             <TabsList>
-              <TabsTrigger value={TAB.GRAPHQL}>GraphQL</TabsTrigger>
-              <TabsTrigger value={TAB.POSTGRES}>Postgres</TabsTrigger>
-              <TabsTrigger value={TAB.ENVIO}>Envio</TabsTrigger>
-              <TabsTrigger value={TAB.THEGRAPH}>The Graph</TabsTrigger>
+              <TabsTrigger value={TAB.PONDER_DB}>Ponder DB</TabsTrigger>
+              <TabsTrigger value={TAB.PONDER_SUBGRAPH}>
+                Ponder Subgraph
+              </TabsTrigger>
+              <TabsTrigger value={TAB.ENVIO_SUBGRAPH}>
+                Envio Subgraph
+              </TabsTrigger>
+              <TabsTrigger value={TAB.THEGRAPH_SUBGRAPH}>
+                The Graph Subgraph
+              </TabsTrigger>
             </TabsList>
           </div>
 
-          <TabsContent value={TAB.GRAPHQL}>
+          <TabsContent value={TAB.PONDER_DB}>
             <div className="mb-4 p-4 bg-muted/40 rounded-md">
-              <h3 className="font-medium mb-1">Ponder GraphQL Data Fetching</h3>
-              <p className="text-sm text-muted-foreground">
-                This tab fetches trade data using ponder's GraphQL API hosted on{" "}
-                <a href="http://localhost:42069">localhost:42069</a>. Check out{" "}
-                <code>./indexer/README.md</code> for more information on how to
-                run the indexer.
-              </p>
-            </div>
-            <PonderGraphQlTrades
-              limit={limit}
-              refetchInterval={refetchInterval}
-              enabled={activeTab === TAB.GRAPHQL && enabled}
-            />
-          </TabsContent>
-
-          <TabsContent value={TAB.POSTGRES}>
-            <div className="mb-4 p-4 bg-muted/40 rounded-md">
-              <h3 className="font-medium mb-1">Postgres Direct Query</h3>
+              <h3 className="font-medium mb-1">Ponder DB</h3>
               <p className="text-sm text-muted-foreground">
                 This tab fetches trade data directly from the Postgres database
-                using SQL queries. It can be more efficient for complex queries
-                or when you need full SQL capabilities.
+                using SQL queries. This is populated by the Ponder indexer.
               </p>
             </div>
-            <PostgresTrades
+            <PonderDbTrades
               limit={limit}
               refetchInterval={refetchInterval}
-              enabled={activeTab === TAB.POSTGRES && enabled}
+              enabled={activeTab === TAB.PONDER_DB && enabled}
+            />
+          </TabsContent>
+          <TabsContent value={TAB.PONDER_SUBGRAPH}>
+            <div className="mb-4 p-4 bg-muted/40 rounded-md">
+              <h3 className="font-medium mb-1">Ponder Subgraph</h3>
+              <p className="text-sm text-muted-foreground">
+                This tab fetches trade data using ponder's GraphQL API hosted on{" "}
+                <a href={PONDER_SUBGRAPH_URL} className="underline">
+                  {PONDER_SUBGRAPH_URL}
+                </a>
+                . Check out <code>./indexer/README.md</code> for more
+                information on how to run the indexer.
+              </p>
+            </div>
+            <PonderSubgraphTrades
+              limit={limit}
+              refetchInterval={refetchInterval}
+              enabled={activeTab === TAB.PONDER_SUBGRAPH && enabled}
             />
           </TabsContent>
 
-          <TabsContent value={TAB.ENVIO}>
+          <TabsContent value={TAB.ENVIO_SUBGRAPH}>
             <div className="mb-4 p-4 bg-muted/40 rounded-md">
-              <h3 className="font-medium mb-1">Envio GraphQL Data Fetching</h3>
+              <h3 className="font-medium mb-1">Envio Subgraph</h3>
               <p className="text-sm text-muted-foreground">
                 This tab fetches trade data using Envio's GraphQL API hosted on{" "}
-                <a href="http://localhost:8080">localhost:8080</a>. Check out{" "}
-                <code>./envio/README.md</code> for more information on how to
-                run the indexer.
+                <a href={ENVIO_SUBGRAPH_URL} className="underline">
+                  {ENVIO_SUBGRAPH_URL}
+                </a>
+                . Check out <code>./envio/README.md</code> for more information
+                on how to run the indexer.
               </p>
             </div>
-            <EnvioGraphQlTrades
+            <EnvioSubgraphTrades
               limit={limit}
               refetchInterval={refetchInterval}
-              enabled={activeTab === TAB.ENVIO && enabled}
+              enabled={activeTab === TAB.ENVIO_SUBGRAPH && enabled}
             />
           </TabsContent>
-          <TabsContent value={TAB.THEGRAPH}>
+          <TabsContent value={TAB.THEGRAPH_SUBGRAPH}>
             <div className="mb-4 p-4 bg-muted/40 rounded-md">
-              <h3 className="font-medium mb-1">The Graph Data Fetching</h3>
-              <p className="text-sm text-muted-foreground">
+              <h3 className="font-medium mb-1">The Graph Subgraph</h3>
+              <p className="text-sm  text-muted-foreground">
                 This tab fetches trade data using The Graph's API hosted on{" "}
-                <a href="https://api.studio.thegraph.com/query/106070/kuru/v0.0.2">
-                  https://api.studio.thegraph.com/query/106070/kuru/v0.0.2
+                <a href={THEGRAPH_SUBGRAPH_URL} className="underline">
+                  {THEGRAPH_SUBGRAPH_URL}
                 </a>
                 . Check out <code>./thegraph/README.md</code> for more
                 information on how to run the indexer.
               </p>
             </div>
-            <TheGraphTrades
+            <TheGraphSubgraphTrades
               limit={limit}
               refetchInterval={refetchInterval}
-              enabled={activeTab === TAB.THEGRAPH && enabled}
+              enabled={activeTab === TAB.THEGRAPH_SUBGRAPH && enabled}
             />
           </TabsContent>
         </Tabs>
       </CardContent>
     </Card>
   );
-}
-
-async function getTradesFromGraphQL(
-  limit: number,
-  signal?: AbortSignal
-): Promise<Trade[]> {
-  const response = await fetch("http://localhost:42069/graphql", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    signal,
-    body: JSON.stringify({
-      query: `
-          query Trades {
-            trades(limit: ${limit}, orderBy: "blockNumber", orderDirection: "desc") {
-              items {
-                blockNumber
-                blockTimestamp
-                filledSize
-                id
-                isBuy
-                orderId
-                makerAddress
-                price
-                takerAddress
-                updatedSize
-                txOrigin
-              }
-            }
-          }
-        `,
-    }),
-  });
-
-  const data = await response.json();
-  return data.data.trades.items;
-}
-
-function PonderGraphQlTrades({
-  limit,
-  refetchInterval,
-  enabled,
-}: {
-  limit: number;
-  refetchInterval: number;
-  enabled: boolean;
-}) {
-  const { data, isPending } = useQuery({
-    queryKey: ["graphql-trades", limit],
-    queryFn: ({ signal }) => getTradesFromGraphQL(limit, signal),
-    refetchInterval,
-    enabled,
-  });
-
-  return <TradeTable trades={data ?? []} isLoading={enabled && isPending} />;
-}
-
-export async function getTradesFromEnvio(
-  limit: number,
-  signal?: AbortSignal
-): Promise<Trade[]> {
-  const response = await fetch("http://localhost:8080/v1/graphql", {
-    headers: {
-      "content-type": "application/json",
-      "x-hasura-admin-secret": "testing",
-    },
-    body: JSON.stringify({
-      query: `{
-        Kuru_Trade(order_by: {blockHeight: desc}, limit: ${limit}) {
-          db_write_timestamp
-          filledSize
-          id
-          isBuy
-          makerAddress
-          orderId
-          takerAddress
-          price
-          txOrigin
-          updatedSize
-          blockHeight
-        }
-      }`,
-    }),
-    method: "POST",
-    signal,
-  });
-
-  const data = await response.json();
-  return data.data.Kuru_Trade;
-}
-
-function EnvioGraphQlTrades({
-  limit,
-  refetchInterval,
-  enabled,
-}: {
-  limit: number;
-  refetchInterval: number;
-  enabled: boolean;
-}) {
-  const { data, isPending } = useQuery({
-    queryKey: ["envio-trades", limit],
-    queryFn: ({ signal }) => getTradesFromEnvio(limit, signal),
-    refetchInterval,
-    enabled,
-  });
-  return <TradeTable trades={data ?? []} isLoading={enabled && isPending} />;
-}
-
-async function getTradesFromTheGraph(
-  limit: number,
-  signal?: AbortSignal
-): Promise<Trade[]> {
-  const response = await fetch(
-    "https://api.studio.thegraph.com/query/106070/kuru/v0.0.2",
-    {
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({
-        query: `{
-        trades(orderBy: blockNumber, orderDirection: desc, first: ${limit}) {
-          blockNumber
-          blockTimestamp
-          filledSize
-          id
-          isBuy
-          makerAddress
-          orderId
-          price
-          takerAddress
-          transactionHash
-          txOrigin
-          updatedSize
-        }
-      }`,
-      }),
-      method: "POST",
-      signal,
-    }
-  );
-
-  const data = await response.json();
-  return data.data.trades.map((item: any) => ({
-    ...item,
-    blockHeight: item.blockNumber,
-  }));
-}
-
-function TheGraphTrades({
-  limit,
-  refetchInterval,
-  enabled,
-}: {
-  limit: number;
-  refetchInterval: number;
-  enabled: boolean;
-}) {
-  const { data, isPending } = useQuery({
-    queryKey: ["thegraph-trades", limit],
-    queryFn: ({ signal }) => getTradesFromTheGraph(limit, signal),
-    refetchInterval,
-    enabled,
-  });
-  console.log({ data });
-  return <TradeTable trades={data ?? []} isLoading={enabled && isPending} />;
-}
-
-function PostgresTrades({
-  limit,
-  refetchInterval,
-  enabled,
-}: {
-  limit: number;
-  refetchInterval: number;
-  enabled: boolean;
-}) {
-  const { data, isPending } = useQuery({
-    queryKey: ["postgres-trades", limit],
-    queryFn: () => getTradesFromPostgres(limit),
-    refetchInterval,
-    enabled,
-  });
-  return <TradeTable trades={data ?? []} isLoading={enabled && isPending} />;
 }
