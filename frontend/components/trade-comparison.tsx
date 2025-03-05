@@ -14,6 +14,7 @@ enum TAB {
   GRAPHQL = "graphql",
   POSTGRES = "postgres",
   ENVIO = "envio",
+  THEGRAPH = "thegraph",
 }
 
 export function TradeComparison() {
@@ -92,6 +93,7 @@ export function TradeComparison() {
               <TabsTrigger value={TAB.GRAPHQL}>GraphQL</TabsTrigger>
               <TabsTrigger value={TAB.POSTGRES}>Postgres</TabsTrigger>
               <TabsTrigger value={TAB.ENVIO}>Envio</TabsTrigger>
+              <TabsTrigger value={TAB.THEGRAPH}>The Graph</TabsTrigger>
             </TabsList>
           </div>
 
@@ -144,6 +146,24 @@ export function TradeComparison() {
               enabled={activeTab === TAB.ENVIO && enabled}
             />
           </TabsContent>
+          <TabsContent value={TAB.THEGRAPH}>
+            <div className="mb-4 p-4 bg-muted/40 rounded-md">
+              <h3 className="font-medium mb-1">The Graph Data Fetching</h3>
+              <p className="text-sm text-muted-foreground">
+                This tab fetches trade data using The Graph's API hosted on{" "}
+                <a href="https://api.studio.thegraph.com/query/106070/kuru/v0.0.2">
+                  https://api.studio.thegraph.com/query/106070/kuru/v0.0.2
+                </a>
+                . Check out <code>./thegraph/README.md</code> for more
+                information on how to run the indexer.
+              </p>
+            </div>
+            <TheGraphTrades
+              limit={limit}
+              refetchInterval={refetchInterval}
+              enabled={activeTab === TAB.THEGRAPH && enabled}
+            />
+          </TabsContent>
         </Tabs>
       </CardContent>
     </Card>
@@ -163,9 +183,10 @@ async function getTradesFromGraphQL(
     body: JSON.stringify({
       query: `
           query Trades {
-            trades(limit: ${limit}, orderBy: "blockHeight", orderDirection: "desc") {
+            trades(limit: ${limit}, orderBy: "blockNumber", orderDirection: "desc") {
               items {
-                blockHeight
+                blockNumber
+                blockTimestamp
                 filledSize
                 id
                 isBuy
@@ -254,6 +275,65 @@ function EnvioGraphQlTrades({
     refetchInterval,
     enabled,
   });
+  return <TradeTable trades={data ?? []} isLoading={enabled && isPending} />;
+}
+
+async function getTradesFromTheGraph(
+  limit: number,
+  signal?: AbortSignal
+): Promise<Trade[]> {
+  const response = await fetch(
+    "https://api.studio.thegraph.com/query/106070/kuru/v0.0.2",
+    {
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        query: `{
+        trades(orderBy: blockNumber, orderDirection: desc, first: ${limit}) {
+          blockNumber
+          blockTimestamp
+          filledSize
+          id
+          isBuy
+          makerAddress
+          orderId
+          price
+          takerAddress
+          transactionHash
+          txOrigin
+          updatedSize
+        }
+      }`,
+      }),
+      method: "POST",
+      signal,
+    }
+  );
+
+  const data = await response.json();
+  return data.data.trades.map((item: any) => ({
+    ...item,
+    blockHeight: item.blockNumber,
+  }));
+}
+
+function TheGraphTrades({
+  limit,
+  refetchInterval,
+  enabled,
+}: {
+  limit: number;
+  refetchInterval: number;
+  enabled: boolean;
+}) {
+  const { data, isPending } = useQuery({
+    queryKey: ["thegraph-trades", limit],
+    queryFn: ({ signal }) => getTradesFromTheGraph(limit, signal),
+    refetchInterval,
+    enabled,
+  });
+  console.log({ data });
   return <TradeTable trades={data ?? []} isLoading={enabled && isPending} />;
 }
 
