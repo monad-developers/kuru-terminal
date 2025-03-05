@@ -1,0 +1,19 @@
+# yaml-language-server: $schema=./node_modules/envio/evm.schema.json
+name: envio-indexer
+networks:
+- id: 10143
+  rpc_config:
+    url: https://monad-testnet.g.alchemy.com/v2/M4-LB4BW4V2mMSkYaqi-HwhkZkeg302A
+  start_block: 6294247
+  contracts:
+  - name: Kuru
+    address:
+    - 0xD3AF145f1Aa1A471b5f0F62c52Cf8fcdc9AB55D3
+    - 0x94B72620e65577De5FB2b8a8B93328CAf6Ca161b
+    - 0x277bF4a0AAc16f19d7bf592FeFFc8D2d9a890508
+    - 0xD5C1Dc181c359f0199c83045A85Cd2556B325De0
+    handler: src/EventHandlers.ts
+    events:
+    - event: OrderCreated(uint40 orderId, address owner, uint96 size, uint32 price, bool isBuy)
+    - event: OrdersCanceled(uint40[] orderId, address owner)
+    - event: Trade(uint40 orderId, address makerAddress, bool isBuy, uint256 price, uint96 updatedSize, address takerAddress, address txOrigin, uint96 filledSize)

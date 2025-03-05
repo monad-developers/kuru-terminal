@@ -1,0 +1,27 @@
+type Kuru_OrderCreated {
+  id: ID!
+  orderId: BigInt!
+  owner: String!
+  size: BigInt!
+  price: BigInt!
+  isBuy: Boolean!
+}
+
+type Kuru_OrdersCanceled {
+  id: ID!
+  orderId: [BigInt!]!
+  owner: String!
+}
+
+type Kuru_Trade {
+  id: ID!
+  orderId: BigInt!
+  makerAddress: String!
+  isBuy: Boolean!
+  price: BigInt!
+  updatedSize: BigInt!
+  takerAddress: String!
+  txOrigin: String!
+  filledSize: BigInt!
+}
+
