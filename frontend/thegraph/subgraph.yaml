@@ -1,0 +1,47 @@
+specVersion: 1.2.0
+indexerHints:
+  prune: auto
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: Kuru
+    network: monad-testnet
+    source:
+      address: "0xD3AF145f1Aa1A471b5f0F62c52Cf8fcdc9AB55D3"
+      abi: Kuru
+      startBlock: 6294247
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.9
+      language: wasm/assemblyscript
+      entities:
+        - Initialized
+        - OrderCreated
+        - OrdersCanceled
+        - OwnershipHandoverCanceled
+        - OwnershipHandoverRequested
+        - OwnershipTransferred
+        - Trade
+        - Upgraded
+      abis:
+        - name: Kuru
+          file: ./abis/Kuru.json
+      eventHandlers:
+        - event: Initialized(uint64)
+          handler: handleInitialized
+        - event: OrderCreated(uint40,address,uint96,uint32,bool)
+          handler: handleOrderCreated
+        - event: OrdersCanceled(uint40[],address)
+          handler: handleOrdersCanceled
+        - event: OwnershipHandoverCanceled(indexed address)
+          handler: handleOwnershipHandoverCanceled
+        - event: OwnershipHandoverRequested(indexed address)
+          handler: handleOwnershipHandoverRequested
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+        - event: Trade(uint40,address,bool,uint256,uint96,address,address,uint96)
+          handler: handleTrade
+        - event: Upgraded(indexed address)
+          handler: handleUpgraded
+      file: ./src/kuru.ts
