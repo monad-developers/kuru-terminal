@@ -108,6 +108,10 @@ Test case:
     ]);
 */
 
+app.get("/", async (req, res) => {
+  res.status(200).send("Hello World");
+});
+
 app.post("/", async (req, res) => {
   const { data } = req.body as EventRequestBody;
   const tradeEvents: any[] = [];
@@ -147,7 +151,7 @@ app.post("/", async (req, res) => {
       }
     }
     if (tradeEvents.length > 0) {
-      // insert into db
+      console.log(`Inserting ${tradeEvents.length} trades into DB`);
       await db.insert(trade).values(tradeEvents);
     }
     res.status(200).send(JSON.stringify(tradeEvents));

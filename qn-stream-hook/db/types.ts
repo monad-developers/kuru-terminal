@@ -1,3 +1,3 @@
-import { trade } from "./ponder-schema";
+import { trade } from "./quicknode-schema";
 
 export type Trade = typeof trade.$inferSelect;
