@@ -146,6 +146,7 @@ app.post("/", async (req, res) => {
             takerAddress,
             txOrigin,
             filledSize: filledSize.toString(),
+            blockHeight: log.blockNumber,
           });
         }
       }
@@ -157,7 +158,7 @@ app.post("/", async (req, res) => {
     res.status(200).send(JSON.stringify(tradeEvents));
   } catch (error) {
     console.log("Error processing request:", error);
-    res.status(500).send("Internal Server Error");
+    res.status(200).send("Internal Server Error");
   }
 });
 
