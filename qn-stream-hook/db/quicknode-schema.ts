@@ -3,7 +3,7 @@ import { pgSchema } from "drizzle-orm/pg-core";
 export const quicknodeSchema = pgSchema("quicknode");
 
 export const trade = quicknodeSchema.table("trade", (t) => ({
-  id: t.text("id").primaryKey(),
+  id: t.integer("id").primaryKey().generatedAlwaysAsIdentity(),
   orderId: t.numeric("order_id", {
     precision: 78,
     scale: 0,

@@ -1,5 +1,5 @@
 {
-  "id": "defb18b8-6c29-45b0-93a3-7cd1dc19d76a",
+  "id": "9abb96a9-0086-4ae0-baec-692a89428214",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -10,9 +10,20 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "integer",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "identity": {
+            "type": "always",
+            "name": "trade_id_seq",
+            "schema": "quicknode",
+            "increment": "1",
+            "startWith": "1",
+            "minValue": "1",
+            "maxValue": "2147483647",
+            "cache": "1",
+            "cycle": false
+          }
         },
         "order_id": {
           "name": "order_id",

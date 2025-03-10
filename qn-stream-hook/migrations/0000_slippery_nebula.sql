@@ -1,7 +1,7 @@
 CREATE SCHEMA "quicknode";
 --> statement-breakpoint
 CREATE TABLE "quicknode"."trade" (
-	"id" text PRIMARY KEY NOT NULL,
+	"id" integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY (sequence name "quicknode"."trade_id_seq" INCREMENT BY 1 MINVALUE 1 MAXVALUE 2147483647 START WITH 1 CACHE 1),
 	"order_id" numeric(78, 0),
 	"tx_origin" text,
 	"maker_address" text,
