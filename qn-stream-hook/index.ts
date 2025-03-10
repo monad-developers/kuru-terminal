@@ -120,11 +120,11 @@ app.post("/", async (req, res) => {
     for (const blockLogs of data) {
       for (const txLogs of blockLogs) {
         for (const log of txLogs) {
-          if (log.topics.length == 0 || log.data.length == 0) {
+          if (log.topics.length === 0 || log.data.length === 0) {
             continue;
           }
           const eventTopic = log.topics[0].toLowerCase();
-          if (eventTopic != tradeTopic) {
+          if (eventTopic !== tradeTopic) {
             continue;
           }
           const [
@@ -152,12 +152,19 @@ app.post("/", async (req, res) => {
       }
     }
     if (tradeEvents.length > 0) {
-      console.log(`Inserting ${tradeEvents.length} trades into DB`);
+      console.log(
+        `[${new Date().toISOString()}] Inserting ${
+          tradeEvents.length
+        } trades into DB`
+      );
       await db.insert(trade).values(tradeEvents);
     }
     res.status(200).send(JSON.stringify(tradeEvents));
   } catch (error) {
-    console.log("Error processing request:", error);
+    console.log(
+      `[${new Date().toISOString()}] Error processing request:`,
+      error
+    );
     res.status(200).send("Internal Server Error");
   }
 });
