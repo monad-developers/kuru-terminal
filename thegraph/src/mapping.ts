@@ -1,3 +1,4 @@
+import { dataSource } from '@graphprotocol/graph-ts'
 import {
   Initialized as InitializedEvent,
   OrderCreated as OrderCreatedEvent,
@@ -7,7 +8,7 @@ import {
   OwnershipTransferred as OwnershipTransferredEvent,
   Trade as TradeEvent,
   Upgraded as UpgradedEvent
-} from "../generated/Kuru/Kuru"
+} from "../generated/MONUSDC/KuruOrderBook";
 import {
   Initialized,
   OrderCreated,
@@ -24,6 +25,7 @@ export function handleInitialized(event: InitializedEvent): void {
     event.transaction.hash.concatI32(event.logIndex.toI32())
   )
   entity.version = event.params.version
+  entity.orderBookAddress = dataSource.address().toHexString()
 
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp
@@ -41,6 +43,7 @@ export function handleOrderCreated(event: OrderCreatedEvent): void {
   entity.size = event.params.size
   entity.price = event.params.price
   entity.isBuy = event.params.isBuy
+  entity.orderBookAddress = dataSource.address().toHexString()
 
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp
@@ -55,6 +58,7 @@ export function handleOrdersCanceled(event: OrdersCanceledEvent): void {
   )
   entity.orderId = event.params.orderId
   entity.owner = event.params.owner
+  entity.orderBookAddress = dataSource.address().toHexString()
 
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp
@@ -70,6 +74,7 @@ export function handleOwnershipHandoverCanceled(
     event.transaction.hash.concatI32(event.logIndex.toI32())
   )
   entity.pendingOwner = event.params.pendingOwner
+  entity.orderBookAddress = dataSource.address().toHexString()
 
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp
@@ -85,6 +90,7 @@ export function handleOwnershipHandoverRequested(
     event.transaction.hash.concatI32(event.logIndex.toI32())
   )
   entity.pendingOwner = event.params.pendingOwner
+  entity.orderBookAddress = dataSource.address().toHexString()
 
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp
@@ -101,6 +107,7 @@ export function handleOwnershipTransferred(
   )
   entity.oldOwner = event.params.oldOwner
   entity.newOwner = event.params.newOwner
+  entity.orderBookAddress = dataSource.address().toHexString()
 
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp
@@ -121,6 +128,7 @@ export function handleTrade(event: TradeEvent): void {
   entity.takerAddress = event.params.takerAddress
   entity.txOrigin = event.params.txOrigin
   entity.filledSize = event.params.filledSize
+  entity.orderBookAddress = dataSource.address().toHexString()
 
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp
@@ -134,10 +142,11 @@ export function handleUpgraded(event: UpgradedEvent): void {
     event.transaction.hash.concatI32(event.logIndex.toI32())
   )
   entity.implementation = event.params.implementation
+  entity.orderBookAddress = dataSource.address().toHexString()
 
   entity.blockNumber = event.block.number
   entity.blockTimestamp = event.block.timestamp
   entity.transactionHash = event.transaction.hash
 
   entity.save()
-}
+} 

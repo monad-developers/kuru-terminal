@@ -1,0 +1,49 @@
+specVersion: 1.2.0
+indexerHints:
+  prune: auto
+schema:
+  file: ./schema.graphql
+dataSources:
+{{#tradingPairs}}
+  - kind: ethereum
+    name: {{name}}
+    network: monad-testnet
+    source:
+      address: "{{address}}"
+      abi: KuruOrderBook
+      startBlock: {{startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.9
+      language: wasm/assemblyscript
+      entities:
+        - Initialized
+        - OrderCreated
+        - OrdersCanceled
+        - OwnershipHandoverCanceled
+        - OwnershipHandoverRequested
+        - OwnershipTransferred
+        - Trade
+        - Upgraded
+      abis:
+        - name: KuruOrderBook
+          file: ./abis/KuruOrderBook.json
+      eventHandlers:
+        - event: Initialized(uint64)
+          handler: handleInitialized
+        - event: OrderCreated(uint40,address,uint96,uint32,bool)
+          handler: handleOrderCreated
+        - event: OrdersCanceled(uint40[],address)
+          handler: handleOrdersCanceled
+        - event: OwnershipHandoverCanceled(indexed address)
+          handler: handleOwnershipHandoverCanceled
+        - event: OwnershipHandoverRequested(indexed address)
+          handler: handleOwnershipHandoverRequested
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+        - event: Trade(uint40,address,bool,uint256,uint96,address,address,uint96)
+          handler: handleTrade
+        - event: Upgraded(indexed address)
+          handler: handleUpgraded
+      file: ./src/mapping.ts
+{{/tradingPairs}} 

@@ -2,37 +2,44 @@
  * Please refer to https://docs.envio.dev for a thorough guide on all Envio indexer features
  */
 import {
-  Kuru,
-  Kuru_OrderCreated,
-  Kuru_OrdersCanceled,
-  Kuru_Trade,
+  KuruOrderBook,
+  KuruOrderBook_Initialized,
+  KuruOrderBook_OrderCreated,
+  KuruOrderBook_OrdersCanceled,
+  KuruOrderBook_OwnershipHandoverCanceled,
+  KuruOrderBook_OwnershipHandoverRequested,
+  KuruOrderBook_OwnershipTransferred,
+  KuruOrderBook_Trade,
+  KuruOrderBook_Upgraded,
 } from "generated";
 
-Kuru.OrderCreated.handler(async ({ event, context }) => {
-  const entity: Kuru_OrderCreated = {
+KuruOrderBook.OrderCreated.handler(async ({ event, context }) => {
+  const entity: KuruOrderBook_OrderCreated = {
     id: `${event.chainId}_${event.block.number}_${event.logIndex}`,
     orderId: event.params.orderId,
     owner: event.params.owner,
     size: event.params.size,
     price: event.params.price,
     isBuy: event.params.isBuy,
+    orderBookAddress: event.srcAddress,
   };
 
-  context.Kuru_OrderCreated.set(entity);
+  context.KuruOrderBook_OrderCreated.set(entity);
 });
 
-Kuru.OrdersCanceled.handler(async ({ event, context }) => {
-  const entity: Kuru_OrdersCanceled = {
+KuruOrderBook.OrdersCanceled.handler(async ({ event, context }) => {
+  const entity: KuruOrderBook_OrdersCanceled = {
     id: `${event.chainId}_${event.block.number}_${event.logIndex}`,
     orderId: event.params.orderId,
     owner: event.params.owner,
+    orderBookAddress: event.srcAddress,
   };
 
-  context.Kuru_OrdersCanceled.set(entity);
+  context.KuruOrderBook_OrdersCanceled.set(entity);
 });
 
-Kuru.Trade.handler(async ({ event, context }) => {
-  const entity: Kuru_Trade = {
+KuruOrderBook.Trade.handler(async ({ event, context }) => {
+  const entity: KuruOrderBook_Trade = {
     id: `${event.chainId}_${event.block.number}_${event.logIndex}`,
     orderId: event.params.orderId,
     makerAddress: event.params.makerAddress,
@@ -43,7 +50,59 @@ Kuru.Trade.handler(async ({ event, context }) => {
     txOrigin: event.params.txOrigin,
     filledSize: event.params.filledSize,
     blockHeight: event.block.number,
+    orderBookAddress: event.srcAddress,
   };
 
-  context.Kuru_Trade.set(entity);
+  context.KuruOrderBook_Trade.set(entity);
+});
+
+KuruOrderBook.Initialized.handler(async ({ event, context }) => {
+  const entity: KuruOrderBook_Initialized = {
+    id: `${event.chainId}_${event.block.number}_${event.logIndex}`,
+    version: event.params.version,
+    orderBookAddress: event.srcAddress,
+  };
+
+  context.KuruOrderBook_Initialized.set(entity);
+});
+
+KuruOrderBook.OwnershipHandoverCanceled.handler(async ({ event, context }) => {
+  const entity: KuruOrderBook_OwnershipHandoverCanceled = {
+    id: `${event.chainId}_${event.block.number}_${event.logIndex}`,
+    pendingOwner: event.params.pendingOwner,
+    orderBookAddress: event.srcAddress,
+  };
+
+  context.KuruOrderBook_OwnershipHandoverCanceled.set(entity);
+});
+
+KuruOrderBook.OwnershipHandoverRequested.handler(async ({ event, context }) => {
+  const entity: KuruOrderBook_OwnershipHandoverRequested = {
+    id: `${event.chainId}_${event.block.number}_${event.logIndex}`,
+    pendingOwner: event.params.pendingOwner,
+    orderBookAddress: event.srcAddress,
+  };
+
+  context.KuruOrderBook_OwnershipHandoverRequested.set(entity);
+});
+
+KuruOrderBook.OwnershipTransferred.handler(async ({ event, context }) => {
+  const entity: KuruOrderBook_OwnershipTransferred = {
+    id: `${event.chainId}_${event.block.number}_${event.logIndex}`,
+    oldOwner: event.params.oldOwner,
+    newOwner: event.params.newOwner,
+    orderBookAddress: event.srcAddress,
+  };
+
+  context.KuruOrderBook_OwnershipTransferred.set(entity);
+});
+
+KuruOrderBook.Upgraded.handler(async ({ event, context }) => {
+  const entity: KuruOrderBook_Upgraded = {
+    id: `${event.chainId}_${event.block.number}_${event.logIndex}`,
+    implementation: event.params.implementation,
+    orderBookAddress: event.srcAddress,
+  };
+
+  context.KuruOrderBook_Upgraded.set(entity);
 });
