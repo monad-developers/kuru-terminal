@@ -2,14 +2,15 @@
 name: envio-indexer
 networks:
 - id: 10143
-  rpc_config:
-    url: https://monad-testnet.g.alchemy.com/v2/M4-LB4BW4V2mMSkYaqi-HwhkZkeg302A
-    interval_ceiling: 50
-    acceleration_additive: 10
-    initial_block_interval: 10
+  # Optional custom RPC configuration - only add if default indexing (Envio HyperSync) has issues
+  # rpc_config:
+  #   url: https://monad-testnet.g.alchemy.com/v2/M4-LB4BW4V2mMSkYaqi-HwhkZkeg302A
+  #   interval_ceiling: 50
+  #   acceleration_additive: 10
+  #   initial_block_interval: 10
   start_block: 6294247
   contracts:
-  - name: Kuru
+  - name: KuruOrderBook
     address:
     - 0xD3AF145f1Aa1A471b5f0F62c52Cf8fcdc9AB55D3
     - 0x94B72620e65577De5FB2b8a8B93328CAf6Ca161b
@@ -20,3 +21,8 @@ networks:
     - event: OrderCreated(uint40 orderId, address owner, uint96 size, uint32 price, bool isBuy)
     - event: OrdersCanceled(uint40[] orderId, address owner)
     - event: Trade(uint40 orderId, address makerAddress, bool isBuy, uint256 price, uint96 updatedSize, address takerAddress, address txOrigin, uint96 filledSize)
+    - event: Initialized(uint64 version)
+    - event: OwnershipHandoverCanceled(address indexed pendingOwner)
+    - event: OwnershipHandoverRequested(address indexed pendingOwner)
+    - event: OwnershipTransferred(address indexed oldOwner, address indexed newOwner)
+    - event: Upgraded(address indexed implementation)
