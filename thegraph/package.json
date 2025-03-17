@@ -1,18 +1,21 @@
 {
-  "name": "kuru-trades",
+  "name": "kuru-subgraph",
   "license": "UNLICENSED",
   "scripts": {
+    "prepare": "mustache config/trading-pairs.json subgraph.yaml.mustache > subgraph.yaml",
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ kuru-trades",
-    "create-local": "graph create --node http://localhost:8020/ kuru-trades",
-    "remove-local": "graph remove --node http://localhost:8020/ kuru-trades",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 kuru-trades",
-    "test": "graph test"
+    "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ kuru-subgraph",
+    "create-local": "graph create --node http://localhost:8020/ kuru-subgraph",
+    "remove-local": "graph remove --node http://localhost:8020/ kuru-subgraph",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 kuru-subgraph"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.96.0",
-    "@graphprotocol/graph-ts": "0.37.0"
+    "@graphprotocol/graph-ts": "0.38.0"
   },
-  "devDependencies": { "matchstick-as": "0.6.0" }
+  "devDependencies": {
+    "matchstick-as": "0.6.0",
+    "mustache": "^4.0.1"
+  }
 }

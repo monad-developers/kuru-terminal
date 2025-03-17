@@ -9,7 +9,7 @@ import {
   OwnershipTransferred,
   Trade,
   Upgraded
-} from "../generated/Kuru/Kuru"
+} from "../generated/MONUSDC/KuruOrderBook"
 
 export function createInitializedEvent(version: BigInt): Initialized {
   let initializedEvent = changetype<Initialized>(newMockEvent())
@@ -83,8 +83,7 @@ export function createOrdersCanceledEvent(
 export function createOwnershipHandoverCanceledEvent(
   pendingOwner: Address
 ): OwnershipHandoverCanceled {
-  let ownershipHandoverCanceledEvent =
-    changetype<OwnershipHandoverCanceled>(newMockEvent())
+  let ownershipHandoverCanceledEvent = changetype<OwnershipHandoverCanceled>(newMockEvent())
 
   ownershipHandoverCanceledEvent.parameters = new Array()
 
@@ -101,8 +100,7 @@ export function createOwnershipHandoverCanceledEvent(
 export function createOwnershipHandoverRequestedEvent(
   pendingOwner: Address
 ): OwnershipHandoverRequested {
-  let ownershipHandoverRequestedEvent =
-    changetype<OwnershipHandoverRequested>(newMockEvent())
+  let ownershipHandoverRequestedEvent = changetype<OwnershipHandoverRequested>(newMockEvent())
 
   ownershipHandoverRequestedEvent.parameters = new Array()
 
@@ -120,8 +118,7 @@ export function createOwnershipTransferredEvent(
   oldOwner: Address,
   newOwner: Address
 ): OwnershipTransferred {
-  let ownershipTransferredEvent =
-    changetype<OwnershipTransferred>(newMockEvent())
+  let ownershipTransferredEvent = changetype<OwnershipTransferred>(newMockEvent())
 
   ownershipTransferredEvent.parameters = new Array()
 

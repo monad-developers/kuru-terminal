@@ -6,10 +6,8 @@ import {
   beforeAll,
   afterAll
 } from "matchstick-as/assembly/index"
-import { BigInt, Address } from "@graphprotocol/graph-ts"
-import { Initialized } from "../generated/schema"
-import { Initialized as InitializedEvent } from "../generated/Kuru/Kuru"
-import { handleInitialized } from "../src/kuru"
+import { BigInt } from "@graphprotocol/graph-ts"
+import { handleInitialized } from "../src/mapping"
 import { createInitializedEvent } from "./kuru-utils"
 
 // Tests structure (matchstick-as >=0.5.0)
