@@ -4,7 +4,7 @@
   "description": "WebSocket server for Kuru Protocol events using Allium Datastreams",
   "main": "dist/server.js",
   "engines": {
-    "node": "20.19.0"
+    "node": "20.x"
   },
   "scripts": {
     "build": "tsc",
@@ -14,7 +14,6 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@10.6.3",
   "devDependencies": {
     "@types/node": "^20.11.24",
     "@types/ws": "^8.5.10",
