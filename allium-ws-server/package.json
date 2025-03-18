@@ -1,0 +1,35 @@
+{
+  "name": "allium-ws-server",
+  "version": "1.0.0",
+  "description": "WebSocket server for Kuru Protocol events using Allium Datastreams",
+  "main": "dist/server.js",
+  "engines": {
+    "node": "20.19.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "dev": "ts-node src/server.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.6.3",
+  "devDependencies": {
+    "@types/node": "^20.11.24",
+    "@types/ws": "^8.5.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@confluentinc/kafka-javascript": "^1.2.0",
+    "dotenv": "^16.4.5",
+    "ethers": "^6.11.1",
+    "ws": "^8.16.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@confluentinc/kafka-javascript"
+    ]
+  }
+}
