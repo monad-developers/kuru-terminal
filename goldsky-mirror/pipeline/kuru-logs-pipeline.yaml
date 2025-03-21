@@ -1,0 +1,20 @@
+name: kuru-order-book-logs-pipeline
+resource_size: s
+apiVersion: 3
+sources:
+  kuru_order_book_logs:
+    type: dataset
+    dataset_name: monad_testnet.raw_logs
+    version: 1.0.0
+    filter: >-
+      address =
+      '0xd3af145f1aa1a471b5f0f62c52cf8fcdc9ab55d3,0x94b72620e65577de5fb2b8a8b93328caf6ca161b,0x277bf4a0aac16f19d7bf592feffc8d2d9a890508,0xd5c1dc181c359f0199c83045a85cd2556b325de0'
+    start_at: earliest
+transforms: {}
+sinks:
+  sink_1:
+    type: webhook
+    secret_name: WEBHOOK_SECRET_CM8H60EAZ0
+    from: kuru_order_book_logs
+    url: https://kuru-indexer-gs-mirror-monad-foundation-c9bb33f5.koyeb.app/
+    one_row_per_request: false

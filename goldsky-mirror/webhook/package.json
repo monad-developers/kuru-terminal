@@ -1,0 +1,35 @@
+{
+  "name": "gs-mirror-hook",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "build": "tsc --outDir dist",
+    "start": "node dist/server.js",
+    "dev": "ts-node src/server.ts",
+    "test": "ts-node src/client.ts",
+    "migrate": "drizzle-kit push:pg",
+    "koyeb:deploy": "koyeb deploy . kuru-indexer-gs-mirror/kuru-indexer-gs-mirror-hook"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^0.10.4",
+    "body-parser": "~1.20.3",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "dotenv": "^16.4.7",
+    "drizzle-orm": "^0.40.0",
+    "ethers": "^6.13.5",
+    "express": "~4.16.1",
+    "http-errors": "~1.6.3",
+    "jade": "~1.11.0",
+    "morgan": "~1.9.1",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "@types/body-parser": "^1.19.5",
+    "@types/express": "^5.0.0",
+    "drizzle-kit": "^0.30.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.2"
+  },
+  "packageManager": "pnpm@10.5.2+sha512.da9dc28cd3ff40d0592188235ab25d3202add8a207afbedc682220e4a0029ffbff4562102b9e6e46b4e3f9e8bd53e6d05de48544b0c57d4b0179e22c76d1199b"
+}
