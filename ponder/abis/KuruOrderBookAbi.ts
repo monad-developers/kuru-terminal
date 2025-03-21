@@ -1,4 +1,4 @@
-export const OrderBookAbi = [
+export const KuruOrderBookAbi = [
     {
       "inputs": [],
       "stateMutability": "nonpayable",

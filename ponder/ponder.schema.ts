@@ -11,4 +11,5 @@ export const trade = onchainTable("trade", (t) => ({
   updatedSize: t.bigint(),
   filledSize: t.bigint(),
   blockHeight: t.bigint(),
+  orderBookAddress: t.hex(),
 }));

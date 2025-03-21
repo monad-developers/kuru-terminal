@@ -1,11 +1,11 @@
 {
-  "name": "indexer",
+  "name": "kuruponder-indexer",
   "version": "0.0.1",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "ponder dev",
-    "start": "ponder start --schema ponder",
+    "start": "ponder start --schema kuru-indexer",
     "db": "ponder db",
     "codegen": "ponder codegen",
     "lint": "eslint .",
@@ -14,7 +14,7 @@
   "dependencies": {
     "dotenv": "^16.4.7",
     "hono": "^4.5.0",
-    "ponder": "^0.9.24",
+    "ponder": "^0.10.2",
     "uuid": "^11.1.0",
     "viem": "^2.21.3"
   },
@@ -26,5 +26,11 @@
   },
   "engines": {
     "node": ">=18.14"
+  },
+  "packageManager": "pnpm@10.6.3+sha512.bb45e34d50a9a76e858a95837301bfb6bd6d35aea2c5d52094fa497a467c43f5c440103ce2511e9e0a2f89c3d6071baac3358fc68ac6fb75e2ceb3d2736065e6",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
   }
 }

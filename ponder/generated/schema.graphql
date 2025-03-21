@@ -33,6 +33,7 @@ type trade {
   updatedSize: BigInt
   filledSize: BigInt
   blockHeight: BigInt
+  orderBookAddress: String
 }
 
 type tradePage {
@@ -128,4 +129,14 @@ input tradeFilter {
   blockHeight_lt: BigInt
   blockHeight_gte: BigInt
   blockHeight_lte: BigInt
+  orderBookAddress: String
+  orderBookAddress_not: String
+  orderBookAddress_in: [String]
+  orderBookAddress_not_in: [String]
+  orderBookAddress_contains: String
+  orderBookAddress_not_contains: String
+  orderBookAddress_starts_with: String
+  orderBookAddress_ends_with: String
+  orderBookAddress_not_starts_with: String
+  orderBookAddress_not_ends_with: String
 }
