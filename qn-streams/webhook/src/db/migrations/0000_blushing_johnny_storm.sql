@@ -10,5 +10,6 @@ CREATE TABLE "quicknode"."trade" (
 	"price" numeric(78, 0),
 	"updated_size" numeric(78, 0),
 	"filled_size" numeric(78, 0),
-	"block_height" numeric(78, 0)
+	"block_height" numeric(78, 0),
+	"order_book_address" text
 );

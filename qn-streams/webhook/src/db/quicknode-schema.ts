@@ -28,4 +28,5 @@ export const trade = quicknodeSchema.table("trade", (t) => ({
     precision: 78,
     scale: 0,
   }),
+  orderBookAddress: t.text("order_book_address"),
 }));

@@ -27,7 +27,7 @@ export const eventTopics = {
   upgraded: contractInterface.getEvent("Upgraded")?.topicHash.toLowerCase(),
 };
 
-interface ProcessedEvents {
+interface KuruEvents {
   trade: TradeEvent[];
   orderCreated: OrderCreatedEvent[];
   ordersCanceled: OrdersCanceledEvent[];
@@ -137,8 +137,8 @@ export function decodeEventData(log: RawLog) {
 }
 
 // Helper function to filter and group events by type
-export function processEvents(logs: RawLog[]): ProcessedEvents {
-  const events: ProcessedEvents = {
+export function processKuruEventsFromLogs(logs: RawLog[]): KuruEvents {
+  const kuruEvents: KuruEvents = {
     trade: [],
     orderCreated: [],
     ordersCanceled: [],
@@ -159,31 +159,31 @@ export function processEvents(logs: RawLog[]): ProcessedEvents {
 
     switch (eventTopic) {
       case eventTopics.trade:
-        events.trade.push(decodedEvent as TradeEvent);
+        kuruEvents.trade.push(decodedEvent as TradeEvent);
         break;
       case eventTopics.orderCreated:
-        events.orderCreated.push(decodedEvent as OrderCreatedEvent);
+        kuruEvents.orderCreated.push(decodedEvent as OrderCreatedEvent);
         break;
       case eventTopics.ordersCanceled:
-        events.ordersCanceled.push(decodedEvent as OrdersCanceledEvent);
+        kuruEvents.ordersCanceled.push(decodedEvent as OrdersCanceledEvent);
         break;
       case eventTopics.initialized:
-        events.initialized.push(decodedEvent as InitializedEvent);
+        kuruEvents.initialized.push(decodedEvent as InitializedEvent);
         break;
       case eventTopics.ownershipHandoverCanceled:
-        events.ownershipHandoverCanceled.push(decodedEvent as OwnershipHandoverCanceledEvent);
+        kuruEvents.ownershipHandoverCanceled.push(decodedEvent as OwnershipHandoverCanceledEvent);
         break;
       case eventTopics.ownershipHandoverRequested:
-        events.ownershipHandoverRequested.push(decodedEvent as OwnershipHandoverRequestedEvent);
+        kuruEvents.ownershipHandoverRequested.push(decodedEvent as OwnershipHandoverRequestedEvent);
         break;
       case eventTopics.ownershipTransferred:
-        events.ownershipTransferred.push(decodedEvent as OwnershipTransferredEvent);
+        kuruEvents.ownershipTransferred.push(decodedEvent as OwnershipTransferredEvent);
         break;
       case eventTopics.upgraded:
-        events.upgraded.push(decodedEvent as UpgradedEvent);
+        kuruEvents.upgraded.push(decodedEvent as UpgradedEvent);
         break;
     }
   }
 
-  return events;
+  return kuruEvents;
 } 

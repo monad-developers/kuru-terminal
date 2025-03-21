@@ -15,7 +15,7 @@ import {
   upgraded,
 } from "./db/goldsky-schema";
 import { EventRequestBody } from "./types";
-import { processEvents } from "./utils";
+import { processKuruEventsFromLogs } from "./utils";
 
 // Validate required environment variables
 if (!process.env.DATABASE_URL) {
@@ -26,7 +26,6 @@ if (!process.env.DATABASE_URL) {
 const app = express();
 const PORT = Number(process.env.PORT) || 3000;
 
-// Log environment info
 console.log(`[${new Date().toISOString()}] Starting server with:`);
 console.log(`- PORT: ${PORT}`);
 console.log(`- Database URL: (set)`);
@@ -34,13 +33,8 @@ console.log(`- Database URL: (set)`);
 app.use(bodyParser.json({ limit: "10mb" }));
 app.use(bodyParser.urlencoded({ extended: true, limit: "10mb" }));
 
-// Add a health check endpoint
-app.get("/health", (req, res) => {
-  res.status(200).json({ status: "ok" });
-});
-
 app.get("/", async (req, res) => {
-  res.status(200).send("Goldsky Mirror Webhook");
+  res.status(200).send("Kuru Indexer Goldsky Mirror Webhook");
 });
 
 app.post("/", async (req, res) => {
@@ -48,7 +42,7 @@ app.post("/", async (req, res) => {
     const { data } = req.body as EventRequestBody;
     console.log(`[${new Date().toISOString()}] Received ${data.length} events`);
     
-    const events = processEvents(data);
+    const events = processKuruEventsFromLogs(data);
     console.log(`[${new Date().toISOString()}] Processing ${events.trade.length} trades, ${events.orderCreated.length} order creations, ${events.ordersCanceled.length} order cancellations, ${events.initialized.length} initializations, ${events.ownershipHandoverCanceled.length} ownership handover cancellations, ${events.ownershipHandoverRequested.length} ownership handover requests, ${events.ownershipTransferred.length} ownership transfers, ${events.upgraded.length} upgrades`);
 
     // Insert events into respective tables
