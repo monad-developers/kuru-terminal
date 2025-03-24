@@ -7,8 +7,10 @@ sources:
     dataset_name: monad_testnet.raw_logs
     version: 1.0.0
     filter: >-
-      address =
-      '0xd3af145f1aa1a471b5f0f62c52cf8fcdc9ab55d3,0x94b72620e65577de5fb2b8a8b93328caf6ca161b,0x277bf4a0aac16f19d7bf592feffc8d2d9a890508,0xd5c1dc181c359f0199c83045a85cd2556b325de0'
+        address = '0xd3af145f1aa1a471b5f0f62c52cf8fcdc9ab55d3' OR
+        address = '0x94b72620e65577de5fb2b8a8b93328caf6ca161b' OR
+        address = '0x277bf4a0aac16f19d7bf592feffc8d2d9a890508' OR
+        address = '0xd5c1dc181c359f0199c83045a85cd2556b325de0'
     start_at: earliest
 transforms: {}
 sinks:
