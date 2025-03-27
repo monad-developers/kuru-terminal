@@ -11,8 +11,3 @@ export interface RawLog {
   topics: string;
   block_timestamp: number;
 }
-
-// Request body type
-export interface EventRequestBody {
-  data: RawLog[];
-} 

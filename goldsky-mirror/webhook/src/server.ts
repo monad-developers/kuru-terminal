@@ -14,7 +14,7 @@ import {
   ownershipTransferred,
   upgraded,
 } from "./db/goldsky-schema";
-import { EventRequestBody } from "./types";
+import { RawLog } from "./types";
 import { processKuruEventsFromLogs } from "./utils";
 
 // Validate required environment variables
@@ -39,10 +39,10 @@ app.get("/", async (req, res) => {
 
 app.post("/", async (req, res) => {
   try {
-    const { data } = req.body as EventRequestBody;
-    console.log(`[${new Date().toISOString()}] Received ${data.length} events`);
+    const logs = req.body as RawLog[];
+    console.log(`[${new Date().toISOString()}] Received ${logs.length} logs`);
     
-    const events = processKuruEventsFromLogs(data);
+    const events = processKuruEventsFromLogs(logs);
     console.log(`[${new Date().toISOString()}] Processing ${events.trade.length} trades, ${events.orderCreated.length} order creations, ${events.ordersCanceled.length} order cancellations, ${events.initialized.length} initializations, ${events.ownershipHandoverCanceled.length} ownership handover cancellations, ${events.ownershipHandoverRequested.length} ownership handover requests, ${events.ownershipTransferred.length} ownership transfers, ${events.upgraded.length} upgrades`);
 
     // Insert events into respective tables
