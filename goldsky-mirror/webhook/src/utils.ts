@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { RawLog } from "./types";
+import { KuruEvents, RawLog } from "./types";
 import kuruOrderBookABI from "./abis/KuruOrderBook.json";
 import {
   TradeEvent,
@@ -27,22 +27,75 @@ export const eventTopics = {
   upgraded: contractInterface.getEvent("Upgraded")?.topicHash.toLowerCase(),
 };
 
-interface KuruEvents {
-  trade: TradeEvent[];
-  orderCreated: OrderCreatedEvent[];
-  ordersCanceled: OrdersCanceledEvent[];
-  initialized: InitializedEvent[];
-  ownershipHandoverCanceled: OwnershipHandoverCanceledEvent[];
-  ownershipHandoverRequested: OwnershipHandoverRequestedEvent[];
-  ownershipTransferred: OwnershipTransferredEvent[];
-  upgraded: UpgradedEvent[];
+/**
+ * Deduplicates logs based on their ID, using block timestamp as primary sort criteria
+ * and maintaining Goldsky's log order as secondary criteria.
+ * 
+ * During chain reorganizations:
+ * 1. Logs with more recent timestamps are considered canonical
+ * 2. For same timestamp (shouldn't happen in reorgs), maintains Goldsky's order
+ * 3. Goldsky handles chain continuity by validating block hash chains
+ * 
+ * @param logs Array of logs to deduplicate
+ * @returns Array of deduplicated logs, keeping the most recent version of each log
+ */
+export function deduplicateLogs(logs: RawLog[]): RawLog[] {
+  if (logs.length <= 1) return logs;
+
+  console.log(`[${new Date().toISOString()}] Starting deduplication of ${logs.length} logs`);
+
+  // Sort by timestamp (descending) and maintain original order for same timestamp
+  const sortedLogs = [...logs].sort((a, b) => {
+    const aTime = a.block_timestamp ?? 0;
+    const bTime = b.block_timestamp ?? 0;
+
+    if (aTime !== bTime) {
+      // Different timestamps - use the more recent one
+      return bTime - aTime;
+    }
+
+    // Same timestamp - trust Goldsky's order as they validate chain continuity
+    return logs.indexOf(b) - logs.indexOf(a);
+  });
+
+  // Keep only the first occurrence of log (most recent due to sorting)
+  const deduplicatedLogs = new Map<string, RawLog>();
+  for (const log of sortedLogs) {
+    if (!deduplicatedLogs.has(log.id)) {
+      deduplicatedLogs.set(log.id, log);
+    } else {
+      const deduplicatedLog = deduplicatedLogs.get(log.id);
+      console.log(`[${new Date().toISOString()}] Duplicate log found:
+      Current log:
+        ID: ${log.id}
+        Address: ${log.address}
+        Block Number: ${log.block_number}
+        Block Timestamp: ${log.block_timestamp}
+        Tx Hash: ${log.transaction_hash}
+
+      Existing log with same ID:
+        ID: ${deduplicatedLog?.id}
+        Address: ${deduplicatedLog?.address}
+        Block Number: ${deduplicatedLog?.block_number}
+        Block Timestamp: ${deduplicatedLog?.block_timestamp}
+        Tx Hash: ${deduplicatedLog?.transaction_hash}
+
+      Block difference: ${Math.abs(log.block_number - (deduplicatedLog?.block_number || 0))} blocks`);
+    }
+  }
+
+  const result = Array.from(deduplicatedLogs.values());
+  const duplicateCount = logs.length - result.length;
+  console.log(`[${new Date().toISOString()}] Deduplication complete. Removed ${duplicateCount} duplicates from ${logs.length} logs`);
+
+  return result;
 }
 
 // Helper function to decode event data
 export function decodeEventData(log: RawLog) {
   const topics = log.topics.split(",");
   const eventTopic = topics[0].toLowerCase();
-  
+
   try {
     const baseEvent = {
       id: log.id,
@@ -53,7 +106,7 @@ export function decodeEventData(log: RawLog) {
 
     switch (eventTopic) {
       case eventTopics.trade: {
-        const [orderId, makerAddress, isBuy, price, updatedSize, takerAddress, txOrigin, filledSize] = 
+        const [orderId, makerAddress, isBuy, price, updatedSize, takerAddress, txOrigin, filledSize] =
           contractInterface.decodeEventLog("Trade", log.data, topics);
         return {
           ...baseEvent,
@@ -68,7 +121,7 @@ export function decodeEventData(log: RawLog) {
         } as TradeEvent;
       }
       case eventTopics.orderCreated: {
-        const [orderId, owner, size, price, isBuy] = 
+        const [orderId, owner, size, price, isBuy] =
           contractInterface.decodeEventLog("OrderCreated", log.data, topics);
         return {
           ...baseEvent,
@@ -80,7 +133,7 @@ export function decodeEventData(log: RawLog) {
         } as OrderCreatedEvent;
       }
       case eventTopics.ordersCanceled: {
-        const [orderIds, owner] = 
+        const [orderIds, owner] =
           contractInterface.decodeEventLog("OrdersCanceled", log.data, topics);
         return {
           ...baseEvent,
@@ -96,7 +149,7 @@ export function decodeEventData(log: RawLog) {
         } as InitializedEvent;
       }
       case eventTopics.ownershipHandoverCanceled: {
-        const [pendingOwner] = 
+        const [pendingOwner] =
           contractInterface.decodeEventLog("OwnershipHandoverCanceled", log.data, topics);
         return {
           ...baseEvent,
@@ -104,7 +157,7 @@ export function decodeEventData(log: RawLog) {
         } as OwnershipHandoverCanceledEvent;
       }
       case eventTopics.ownershipHandoverRequested: {
-        const [pendingOwner] = 
+        const [pendingOwner] =
           contractInterface.decodeEventLog("OwnershipHandoverRequested", log.data, topics);
         return {
           ...baseEvent,
@@ -112,7 +165,7 @@ export function decodeEventData(log: RawLog) {
         } as OwnershipHandoverRequestedEvent;
       }
       case eventTopics.ownershipTransferred: {
-        const [oldOwner, newOwner] = 
+        const [oldOwner, newOwner] =
           contractInterface.decodeEventLog("OwnershipTransferred", log.data, topics);
         return {
           ...baseEvent,
@@ -149,12 +202,14 @@ export function processKuruEventsFromLogs(logs: RawLog[]): KuruEvents {
     upgraded: [],
   };
 
-  for (const log of logs) {
+  const deduplicatedLogs = deduplicateLogs(logs);
+
+  for (const log of deduplicatedLogs) {
     if (!log.topics || !log.data) continue;
-    
+
     const eventTopic = log.topics.split(",")[0].toLowerCase();
     const decodedEvent = decodeEventData(log);
-    
+
     if (!decodedEvent) continue;
 
     switch (eventTopic) {

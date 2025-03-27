@@ -1,6 +1,10 @@
-import { config } from "dotenv";
-import { drizzle } from "drizzle-orm/neon-http";
+import dotenv from "dotenv";
+dotenv.config();
 
-config({ path: ".env" });
+import { drizzle } from 'drizzle-orm/neon-serverless';
+import ws from 'ws';
 
-export const db = drizzle(process.env.DATABASE_URL!);
+export const db = drizzle({
+  connection: process.env.DATABASE_URL!,
+  ws,
+});
