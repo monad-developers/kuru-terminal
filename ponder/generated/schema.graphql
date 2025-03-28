@@ -24,6 +24,9 @@ type Query {
 
 type trade {
   id: String!
+  txHash: String
+  blockHeight: BigInt
+  orderBookAddress: String
   orderId: BigInt
   txOrigin: String
   makerAddress: String
@@ -32,8 +35,6 @@ type trade {
   price: BigInt
   updatedSize: BigInt
   filledSize: BigInt
-  blockHeight: BigInt
-  orderBookAddress: String
 }
 
 type tradePage {
@@ -55,6 +56,34 @@ input tradeFilter {
   id_ends_with: String
   id_not_starts_with: String
   id_not_ends_with: String
+  txHash: String
+  txHash_not: String
+  txHash_in: [String]
+  txHash_not_in: [String]
+  txHash_contains: String
+  txHash_not_contains: String
+  txHash_starts_with: String
+  txHash_ends_with: String
+  txHash_not_starts_with: String
+  txHash_not_ends_with: String
+  blockHeight: BigInt
+  blockHeight_not: BigInt
+  blockHeight_in: [BigInt]
+  blockHeight_not_in: [BigInt]
+  blockHeight_gt: BigInt
+  blockHeight_lt: BigInt
+  blockHeight_gte: BigInt
+  blockHeight_lte: BigInt
+  orderBookAddress: String
+  orderBookAddress_not: String
+  orderBookAddress_in: [String]
+  orderBookAddress_not_in: [String]
+  orderBookAddress_contains: String
+  orderBookAddress_not_contains: String
+  orderBookAddress_starts_with: String
+  orderBookAddress_ends_with: String
+  orderBookAddress_not_starts_with: String
+  orderBookAddress_not_ends_with: String
   orderId: BigInt
   orderId_not: BigInt
   orderId_in: [BigInt]
@@ -121,22 +150,4 @@ input tradeFilter {
   filledSize_lt: BigInt
   filledSize_gte: BigInt
   filledSize_lte: BigInt
-  blockHeight: BigInt
-  blockHeight_not: BigInt
-  blockHeight_in: [BigInt]
-  blockHeight_not_in: [BigInt]
-  blockHeight_gt: BigInt
-  blockHeight_lt: BigInt
-  blockHeight_gte: BigInt
-  blockHeight_lte: BigInt
-  orderBookAddress: String
-  orderBookAddress_not: String
-  orderBookAddress_in: [String]
-  orderBookAddress_not_in: [String]
-  orderBookAddress_contains: String
-  orderBookAddress_not_contains: String
-  orderBookAddress_starts_with: String
-  orderBookAddress_ends_with: String
-  orderBookAddress_not_starts_with: String
-  orderBookAddress_not_ends_with: String
 }
