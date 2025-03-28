@@ -12,6 +12,7 @@ import {
   THEGRAPH_SUBGRAPH_URL,
   TheGraphSubgraphTrades,
 } from "@/components/the-graph-subgraph-trades";
+import { GOLDSKY_SUBGRAPH_URL, GoldskySubgraphTrades } from "./GoldskySubgraphTrades";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
@@ -22,6 +23,7 @@ enum TAB {
   PONDER_SUBGRAPH = "ponder-subgraph",
   ENVIO_SUBGRAPH = "envio-subgraph",
   THEGRAPH_SUBGRAPH = "thegraph-subgraph",
+  GOLDSKY_SUBGRAPH = "goldsky-subgraph",
 }
 
 export function TradeComparison() {
@@ -106,6 +108,9 @@ export function TradeComparison() {
               <TabsTrigger value={TAB.THEGRAPH_SUBGRAPH}>
                 The Graph Subgraph
               </TabsTrigger>
+              <TabsTrigger value={TAB.GOLDSKY_SUBGRAPH}>
+                Goldsky Subgraph
+              </TabsTrigger>
             </TabsList>
           </div>
 
@@ -146,6 +151,7 @@ export function TradeComparison() {
               enabled={activeTab === TAB.ENVIO_SUBGRAPH && enabled}
             />
           </TabsContent>
+
           <TabsContent value={TAB.THEGRAPH_SUBGRAPH}>
             <div className="mb-4 p-4 bg-muted/40 rounded-md">
               <h3 className="font-medium mb-1">The Graph Subgraph</h3>
@@ -162,6 +168,25 @@ export function TradeComparison() {
               limit={limit}
               refetchInterval={refetchInterval}
               enabled={activeTab === TAB.THEGRAPH_SUBGRAPH && enabled}
+            />
+          </TabsContent>
+
+          <TabsContent value={TAB.GOLDSKY_SUBGRAPH}>
+            <div className="mb-4 p-4 bg-muted/40 rounded-md">
+              <h3 className="font-medium mb-1">Goldsky Subgraph</h3>
+              <p className="text-sm  text-muted-foreground">
+                This tab fetches trade data using Goldsky's API hosted on{" "}
+                <a href={GOLDSKY_SUBGRAPH_URL} className="underline">
+                  {GOLDSKY_SUBGRAPH_URL}
+                </a>
+                . Check out <code>./goldsky/README.md</code> for more
+                information on how to run the indexer.
+              </p>
+            </div>
+            <GoldskySubgraphTrades
+              limit={limit}
+              refetchInterval={refetchInterval}
+              enabled={activeTab === TAB.GOLDSKY_SUBGRAPH && enabled}
             />
           </TabsContent>
         </Tabs>
