@@ -28,59 +28,39 @@ export const eventTopics = {
 };
 
 /**
- * Deduplicates logs based on their ID, using block timestamp as primary sort criteria
- * and maintaining Goldsky's log order as secondary criteria.
+ * Deduplicates logs based on their ID, keeping the most recent occurrence of each log.
  * 
  * During chain reorganizations:
- * 1. Logs with more recent timestamps are considered canonical
- * 2. For same timestamp (shouldn't happen in reorgs), maintains Goldsky's order
- * 3. Goldsky handles chain continuity by validating block hash chains
+ * 1. Mirror streams events in chronological order within batches [older,...,latest]
+ * 2. For duplicate log IDs, the latest occurrence (highest index) represents the most up-to-date state
+ * 3. This approach handles reorgs properly as Mirror ensures the final state is streamed last
  * 
  * @param logs Array of logs to deduplicate
- * @returns Array of deduplicated logs, keeping the most recent version of each log
+ * @returns Array of deduplicated logs with the latest state for each log ID
  */
 export function deduplicateLogs(logs: RawLog[]): RawLog[] {
   if (logs.length <= 1) return logs;
 
   console.log(`[${new Date().toISOString()}] Starting deduplication of ${logs.length} logs`);
 
-  // Sort by timestamp (descending) and maintain original order for same timestamp
-  const sortedLogs = [...logs].sort((a, b) => {
-    const aTime = a.block_timestamp ?? 0;
-    const bTime = b.block_timestamp ?? 0;
-
-    if (aTime !== bTime) {
-      // Different timestamps - use the more recent one
-      return bTime - aTime;
-    }
-
-    // Same timestamp - trust Goldsky's order as they validate chain continuity
-    return logs.indexOf(b) - logs.indexOf(a);
-  });
-
-  // Keep only the first occurrence of log (most recent due to sorting)
+  // Process logs in reverse order (from latest to oldest)
+  // First occurrence we see of each ID is its latest state
   const deduplicatedLogs = new Map<string, RawLog>();
-  for (const log of sortedLogs) {
+  for (let i = logs.length - 1; i >= 0; i--) {
+    const log = logs[i];
+
     if (!deduplicatedLogs.has(log.id)) {
       deduplicatedLogs.set(log.id, log);
     } else {
-      const deduplicatedLog = deduplicatedLogs.get(log.id);
-      console.log(`[${new Date().toISOString()}] Duplicate log found:
-      Current log:
-        ID: ${log.id}
-        Address: ${log.address}
-        Block Number: ${log.block_number}
-        Block Timestamp: ${log.block_timestamp}
-        Tx Hash: ${log.transaction_hash}
-
-      Existing log with same ID:
-        ID: ${deduplicatedLog?.id}
-        Address: ${deduplicatedLog?.address}
-        Block Number: ${deduplicatedLog?.block_number}
-        Block Timestamp: ${deduplicatedLog?.block_timestamp}
-        Tx Hash: ${deduplicatedLog?.transaction_hash}
-
-      Block difference: ${Math.abs(log.block_number - (deduplicatedLog?.block_number || 0))} blocks`);
+      const latestLog = deduplicatedLogs.get(log.id);
+      console.log(`[${new Date().toISOString()}] Duplicate log found (keeping newer version):
+      ID: ${log.id}
+      Older version at block: ${log.block_number}
+      Older version block timestamp: ${log.block_timestamp}
+      Older version transaction hash: ${log.transaction_hash}
+      Newer version at block: ${latestLog?.block_number}
+      Newer version block timestamp: ${latestLog?.block_timestamp}
+      Newer version transaction hash: ${latestLog?.transaction_hash}`);
     }
   }
 
