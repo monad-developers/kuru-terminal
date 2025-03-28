@@ -14,11 +14,10 @@ export async function getTradesFromEnvio(
   const response = await fetch(ENVIO_SUBGRAPH_URL, {
     headers: {
       "content-type": "application/json",
-      "x-hasura-admin-secret": "testing",
     },
     body: JSON.stringify({
       query: `{
-          Kuru_Trade(order_by: {blockHeight: desc}, limit: ${limit}) {
+          KuruOrderBook_Trade(order_by: {blockHeight: desc}, limit: ${limit}) {
             db_write_timestamp
             filledSize
             id
@@ -38,7 +37,7 @@ export async function getTradesFromEnvio(
   });
 
   const data = await response.json();
-  return data.data.Kuru_Trade;
+  return data.data.KuruOrderBook_Trade;
 }
 
 export function EnvioSubgraphTrades({

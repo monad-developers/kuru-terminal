@@ -4,7 +4,6 @@ import {
   ENVIO_SUBGRAPH_URL,
   EnvioSubgraphTrades,
 } from "@/components/envio-subgraph-trades";
-import { PonderDbTrades } from "@/components/ponder-db-trades";
 import {
   PONDER_SUBGRAPH_URL,
   PonderSubgraphTrades,
@@ -21,7 +20,6 @@ import { useState } from "react";
 
 enum TAB {
   PONDER_SUBGRAPH = "ponder-subgraph",
-  PONDER_DB = "ponder-db",
   ENVIO_SUBGRAPH = "envio-subgraph",
   THEGRAPH_SUBGRAPH = "thegraph-subgraph",
 }
@@ -99,7 +97,6 @@ export function TradeComparison() {
         >
           <div className="flex justify-between items-center mb-4">
             <TabsList>
-              <TabsTrigger value={TAB.PONDER_DB}>Ponder DB</TabsTrigger>
               <TabsTrigger value={TAB.PONDER_SUBGRAPH}>
                 Ponder Subgraph
               </TabsTrigger>
@@ -112,20 +109,6 @@ export function TradeComparison() {
             </TabsList>
           </div>
 
-          <TabsContent value={TAB.PONDER_DB}>
-            <div className="mb-4 p-4 bg-muted/40 rounded-md">
-              <h3 className="font-medium mb-1">Ponder DB</h3>
-              <p className="text-sm text-muted-foreground">
-                This tab fetches trade data directly from the Postgres database
-                using SQL queries. This is populated by the Ponder indexer.
-              </p>
-            </div>
-            <PonderDbTrades
-              limit={limit}
-              refetchInterval={refetchInterval}
-              enabled={activeTab === TAB.PONDER_DB && enabled}
-            />
-          </TabsContent>
           <TabsContent value={TAB.PONDER_SUBGRAPH}>
             <div className="mb-4 p-4 bg-muted/40 rounded-md">
               <h3 className="font-medium mb-1">Ponder Subgraph</h3>

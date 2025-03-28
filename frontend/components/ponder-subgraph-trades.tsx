@@ -21,19 +21,18 @@ async function getTradesFromGraphQL(
     body: JSON.stringify({
       query: `
             query Trades {
-              trades(limit: ${limit}, orderBy: "blockNumber", orderDirection: "desc") {
+              trades(limit: ${limit}, orderBy: "blockHeight", orderDirection: "desc") {
                 items {
-                  blockNumber
-                  blockTimestamp
+                  blockHeight
                   filledSize
                   id
                   isBuy
-                  orderId
                   makerAddress
+                  orderId
                   price
                   takerAddress
                   updatedSize
-                  txOrigin
+                  orderBookAddress
                 }
               }
             }
