@@ -1,11 +1,12 @@
-import { Providers } from "@/app/providers";
 import type { Metadata } from "next";
+import QueryProvider from "@/providers/QueryProvider";
+import ThemeProvider from "@/providers/ThemeProvider";
+
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "v0 App",
-  description: "Created with v0",
-  generator: "v0.dev",
+  title: "Kuru Indexer Example App",
+  description: "Kuru Indexer Example App",
 };
 
 export default function RootLayout({
@@ -15,9 +16,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <Providers>
-        <body className="container mx-auto">{children}</body>
-      </Providers>
+      <QueryProvider>
+        <ThemeProvider>
+          <body className="container mx-auto">{children}</body>
+        </ThemeProvider>
+      </QueryProvider>
     </html>
   );
 }

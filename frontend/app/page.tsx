@@ -1,4 +1,4 @@
-import { TradeComparison } from "@/components/trade-comparison";
+import TradeComparison from "@/components/TradeComparison";
 
 export default function Home() {
   return (

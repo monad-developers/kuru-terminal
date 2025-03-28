@@ -1,39 +1,32 @@
 "use client";
 
-import {
-  ENVIO_SUBGRAPH_URL,
-  EnvioSubgraphTrades,
-} from "@/components/envio-subgraph-trades";
-import {
-  PONDER_SUBGRAPH_URL,
-  PonderSubgraphTrades,
-} from "@/components/ponder-subgraph-trades";
-import {
-  THEGRAPH_SUBGRAPH_URL,
-  TheGraphSubgraphTrades,
-} from "@/components/the-graph-subgraph-trades";
-import { GOLDSKY_SUBGRAPH_URL, GoldskySubgraphTrades } from "./GoldskySubgraphTrades";
+import EnvioHyperIndexTrades from "@/components/EnvioHyperIndexTrades";
+import PonderTrades from "@/components/PonderTrades";
+import TheGraphSubgraphTrades from "@/components/TheGraphSubgraphTrades";
+import GoldskySubgraphTrades from "@/components/GoldskySubgraphTrades";
+import AlchemySubgraphTrades from "./AlchemySubgraphTrades";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useState } from "react";
+import {
+  ENVIO_HYPERINDEX_API_URL,
+  PONDER_GRAPHQL_API_URL,
+  THEGRAPH_SUBGRAPH_URL,
+  GOLDSKY_SUBGRAPH_URL,
+  ALCHEMY_SUBGRAPH_URL,
+} from "@/config/env.config";
+import { Tab } from "@/enums/tab.enum";
 
-enum TAB {
-  PONDER_SUBGRAPH = "ponder-subgraph",
-  ENVIO_SUBGRAPH = "envio-subgraph",
-  THEGRAPH_SUBGRAPH = "thegraph-subgraph",
-  GOLDSKY_SUBGRAPH = "goldsky-subgraph",
-}
-
-export function TradeComparison() {
-  const [activeTab, setActiveTab] = useState<TAB>(TAB.PONDER_SUBGRAPH);
+const TradeComparison = () => {
+  const [activeTab, setActiveTab] = useState<Tab>(Tab.PONDER);
   const [refetchInterval, setRefetchInterval] = useState<number>(1000); // ms
   const [enabled, setEnabled] = useState<boolean>(false);
   const [limit, setLimit] = useState<number>(20);
 
   const handleTabChange = (value: string) => {
-    setActiveTab(value as TAB);
+    setActiveTab(value as Tab);
   };
 
   const handleIntervalChange = (value: number[]) => {
@@ -93,66 +86,69 @@ export function TradeComparison() {
       </CardHeader>
       <CardContent>
         <Tabs
-          defaultValue={TAB.PONDER_SUBGRAPH}
+          defaultValue={Tab.PONDER}
           value={activeTab}
           onValueChange={handleTabChange}
         >
           <div className="flex justify-between items-center mb-4">
             <TabsList>
-              <TabsTrigger value={TAB.PONDER_SUBGRAPH}>
+              <TabsTrigger value={Tab.PONDER}>
                 Ponder Subgraph
               </TabsTrigger>
-              <TabsTrigger value={TAB.ENVIO_SUBGRAPH}>
+              <TabsTrigger value={Tab.ENVIO_HYPERINDEX}>
                 Envio Subgraph
               </TabsTrigger>
-              <TabsTrigger value={TAB.THEGRAPH_SUBGRAPH}>
+              <TabsTrigger value={Tab.THEGRAPH_SUBGRAPH}>
                 The Graph Subgraph
               </TabsTrigger>
-              <TabsTrigger value={TAB.GOLDSKY_SUBGRAPH}>
+              <TabsTrigger value={Tab.GOLDSKY_SUBGRAPH}>
                 Goldsky Subgraph
+              </TabsTrigger>
+              <TabsTrigger value={Tab.ALCHEMY_SUBGRAPH}>
+                Alchemy Subgraph
               </TabsTrigger>
             </TabsList>
           </div>
 
-          <TabsContent value={TAB.PONDER_SUBGRAPH}>
+          <TabsContent value={Tab.PONDER}>
             <div className="mb-4 p-4 bg-muted/40 rounded-md">
               <h3 className="font-medium mb-1">Ponder Subgraph</h3>
               <p className="text-sm text-muted-foreground">
                 This tab fetches trade data using ponder's GraphQL API hosted on{" "}
-                <a href={PONDER_SUBGRAPH_URL} className="underline">
-                  {PONDER_SUBGRAPH_URL}
+                <a href={PONDER_GRAPHQL_API_URL} className="underline">
+                  {PONDER_GRAPHQL_API_URL}
                 </a>
                 . Check out <code>./indexer/README.md</code> for more
                 information on how to run the indexer.
               </p>
             </div>
-            <PonderSubgraphTrades
+            <PonderTrades
               limit={limit}
               refetchInterval={refetchInterval}
-              enabled={activeTab === TAB.PONDER_SUBGRAPH && enabled}
+              enabled={activeTab === Tab.PONDER && enabled}
             />
           </TabsContent>
 
-          <TabsContent value={TAB.ENVIO_SUBGRAPH}>
+          <TabsContent value={Tab.ENVIO_HYPERINDEX}>
             <div className="mb-4 p-4 bg-muted/40 rounded-md">
               <h3 className="font-medium mb-1">Envio Subgraph</h3>
               <p className="text-sm text-muted-foreground">
                 This tab fetches trade data using Envio's GraphQL API hosted on{" "}
-                <a href={ENVIO_SUBGRAPH_URL} className="underline">
-                  {ENVIO_SUBGRAPH_URL}
+                <a href={ENVIO_HYPERINDEX_API_URL} className="underline">
+                  {ENVIO_HYPERINDEX_API_URL}
                 </a>
                 . Check out <code>./envio/README.md</code> for more information
                 on how to run the indexer.
               </p>
             </div>
-            <EnvioSubgraphTrades
+            <EnvioHyperIndexTrades
               limit={limit}
               refetchInterval={refetchInterval}
-              enabled={activeTab === TAB.ENVIO_SUBGRAPH && enabled}
+              enabled={activeTab === Tab.ENVIO_HYPERINDEX && enabled}
             />
           </TabsContent>
 
-          <TabsContent value={TAB.THEGRAPH_SUBGRAPH}>
+          <TabsContent value={Tab.THEGRAPH_SUBGRAPH}>
             <div className="mb-4 p-4 bg-muted/40 rounded-md">
               <h3 className="font-medium mb-1">The Graph Subgraph</h3>
               <p className="text-sm  text-muted-foreground">
@@ -167,11 +163,11 @@ export function TradeComparison() {
             <TheGraphSubgraphTrades
               limit={limit}
               refetchInterval={refetchInterval}
-              enabled={activeTab === TAB.THEGRAPH_SUBGRAPH && enabled}
+              enabled={activeTab === Tab.THEGRAPH_SUBGRAPH && enabled}
             />
           </TabsContent>
 
-          <TabsContent value={TAB.GOLDSKY_SUBGRAPH}>
+          <TabsContent value={Tab.GOLDSKY_SUBGRAPH}>
             <div className="mb-4 p-4 bg-muted/40 rounded-md">
               <h3 className="font-medium mb-1">Goldsky Subgraph</h3>
               <p className="text-sm  text-muted-foreground">
@@ -186,11 +182,28 @@ export function TradeComparison() {
             <GoldskySubgraphTrades
               limit={limit}
               refetchInterval={refetchInterval}
-              enabled={activeTab === TAB.GOLDSKY_SUBGRAPH && enabled}
+              enabled={activeTab === Tab.GOLDSKY_SUBGRAPH && enabled}
+            />
+          </TabsContent>
+
+          <TabsContent value={Tab.ALCHEMY_SUBGRAPH}>
+            <div className="mb-4 p-4 bg-muted/40 rounded-md">
+              <h3 className="font-medium mb-1">Alchemy Subgraph</h3>
+              <p className="text-sm  text-muted-foreground">
+                This tab fetches trade data using Alchemy's API hosted on{" "}
+                {ALCHEMY_SUBGRAPH_URL}
+              </p>
+            </div>
+            <AlchemySubgraphTrades
+              limit={limit}
+              refetchInterval={refetchInterval}
+              enabled={activeTab === Tab.ALCHEMY_SUBGRAPH && enabled}
             />
           </TabsContent>
         </Tabs>
       </CardContent>
     </Card>
   );
-}
+};
+
+export default TradeComparison;

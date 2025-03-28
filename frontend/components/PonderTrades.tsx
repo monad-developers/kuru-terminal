@@ -1,18 +1,13 @@
-import { TradeTable } from "@/components/trade-table";
-import type { Trade } from "@/db/types";
 import { useQuery } from "@tanstack/react-query";
+import TradeTable from "@/components/TradeTable";
+import { PONDER_GRAPHQL_API_URL } from "@/config/env.config";
+import type { Trade } from "@/db/types";
 
-export const PONDER_SUBGRAPH_URL =
-  process.env.NEXT_PUBLIC_PONDER_SUBGRAPH_URL!;
-if (!PONDER_SUBGRAPH_URL) {
-  throw new Error("NEXT_PUBLIC_PONDER_SUBGRAPH_URL is not set");
-}
-
-async function getTradesFromGraphQL(
+async function getTradesFromPonderApi(
   limit: number,
   signal?: AbortSignal
 ): Promise<Trade[]> {
-  const response = await fetch(PONDER_SUBGRAPH_URL, {
+  const response = await fetch(PONDER_GRAPHQL_API_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -23,6 +18,7 @@ async function getTradesFromGraphQL(
             query Trades {
               trades(limit: ${limit}, orderBy: "blockHeight", orderDirection: "desc") {
                 items {
+                  txHash
                   blockHeight
                   filledSize
                   id
@@ -39,12 +35,11 @@ async function getTradesFromGraphQL(
           `,
     }),
   });
-
-  const data = await response.json();
-  return data.data.trades.items;
+  const { data } = await response.json();
+  return data.trades.items;
 }
 
-export function PonderSubgraphTrades({
+const PonderSubgraphTrades = ({
   limit,
   refetchInterval,
   enabled,
@@ -52,13 +47,15 @@ export function PonderSubgraphTrades({
   limit: number;
   refetchInterval: number;
   enabled: boolean;
-}) {
+}) => {
   const { data, isPending } = useQuery({
-    queryKey: ["graphql-trades", limit],
-    queryFn: ({ signal }) => getTradesFromGraphQL(limit, signal),
+    queryKey: ["ponder-trades", limit],
+    queryFn: ({ signal }) => getTradesFromPonderApi(limit, signal),
     refetchInterval,
     enabled,
   });
 
   return <TradeTable trades={data ?? []} isLoading={enabled && isPending} />;
 }
+
+export default PonderSubgraphTrades;

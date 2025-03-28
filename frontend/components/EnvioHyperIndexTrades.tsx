@@ -1,17 +1,13 @@
-import { TradeTable } from "@/components/trade-table";
-import type { Trade } from "@/db/types";
 import { useQuery } from "@tanstack/react-query";
+import TradeTable from "@/components/TradeTable";
+import { ENVIO_HYPERINDEX_API_URL } from "@/config/env.config";
+import type { Trade } from "@/db/types";
 
-export const ENVIO_SUBGRAPH_URL = process.env.NEXT_PUBLIC_ENVIO_SUBGRAPH_URL!;
-if (!ENVIO_SUBGRAPH_URL) {
-  throw new Error("NEXT_PUBLIC_ENVIO_SUBGRAPH_URL is not set");
-}
-
-export async function getTradesFromEnvio(
+export async function getTradesFromEnvioHyperIndex(
   limit: number,
   signal?: AbortSignal
 ): Promise<Trade[]> {
-  const response = await fetch(ENVIO_SUBGRAPH_URL, {
+  const response = await fetch(ENVIO_HYPERINDEX_API_URL, {
     headers: {
       "content-type": "application/json",
     },
@@ -35,12 +31,12 @@ export async function getTradesFromEnvio(
     method: "POST",
     signal,
   });
+  const { data } = await response.json();
 
-  const data = await response.json();
-  return data.data.KuruOrderBook_Trade;
+  return data.KuruOrderBook_Trade;
 }
 
-export function EnvioSubgraphTrades({
+const EnvioHyperIndexTrades = ({
   limit,
   refetchInterval,
   enabled,
@@ -48,12 +44,14 @@ export function EnvioSubgraphTrades({
   limit: number;
   refetchInterval: number;
   enabled: boolean;
-}) {
+}) => {
   const { data, isPending } = useQuery({
-    queryKey: ["envio-trades", limit],
-    queryFn: ({ signal }) => getTradesFromEnvio(limit, signal),
+    queryKey: ["envio-hyperindex-trades", limit],
+    queryFn: ({ signal }) => getTradesFromEnvioHyperIndex(limit, signal),
     refetchInterval,
     enabled,
   });
   return <TradeTable trades={data ?? []} isLoading={enabled && isPending} />;
 }
+
+export default EnvioHyperIndexTrades;

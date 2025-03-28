@@ -10,12 +10,58 @@ import {
 } from "@/components/ui/table";
 import type { Trade } from "@/db/types";
 
+function TradeTableSkeleton() {
+  return (
+    <div className="rounded-md border">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>ID</TableHead>
+            <TableHead>Type</TableHead>
+            <TableHead>Price</TableHead>
+            <TableHead>Filled Size</TableHead>
+            <TableHead>Maker</TableHead>
+            <TableHead>Taker</TableHead>
+            <TableHead>Block Height</TableHead>
+            <TableHead>Time</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {Array.from({ length: 5 }).map((_, i) => (
+            <TableRow key={i}>
+              {Array.from({ length: 8 }).map((_, j) => (
+                <TableCell key={j}>
+                  <div className="h-4 w-20 animate-pulse rounded bg-muted"></div>
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
+  );
+}
+
+function truncate(str: string, length: number): string {
+  if (str.length <= length) return str;
+  return `${str.slice(0, length)}...`;
+}
+
+function formatBigInt(value: string): string {
+  try {
+    const num = BigInt(value);
+    return num.toLocaleString();
+  } catch (e) {
+    return value;
+  }
+}
+
 interface TradeTableProps {
   trades: Trade[];
   isLoading?: boolean;
 }
 
-export function TradeTable({ trades, isLoading = false }: TradeTableProps) {
+const TradeTable = ({ trades, isLoading = false }: TradeTableProps) => {
   if (isLoading) {
     return <TradeTableSkeleton />;
   }
@@ -76,50 +122,6 @@ export function TradeTable({ trades, isLoading = false }: TradeTableProps) {
       </Table>
     </div>
   );
-}
+};
 
-function TradeTableSkeleton() {
-  return (
-    <div className="rounded-md border">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>ID</TableHead>
-            <TableHead>Type</TableHead>
-            <TableHead>Price</TableHead>
-            <TableHead>Filled Size</TableHead>
-            <TableHead>Maker</TableHead>
-            <TableHead>Taker</TableHead>
-            <TableHead>Block Height</TableHead>
-            <TableHead>Time</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {Array.from({ length: 5 }).map((_, i) => (
-            <TableRow key={i}>
-              {Array.from({ length: 8 }).map((_, j) => (
-                <TableCell key={j}>
-                  <div className="h-4 w-20 animate-pulse rounded bg-muted"></div>
-                </TableCell>
-              ))}
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </div>
-  );
-}
-
-function truncate(str: string, length: number): string {
-  if (str.length <= length) return str;
-  return `${str.slice(0, length)}...`;
-}
-
-function formatBigInt(value: string): string {
-  try {
-    const num = BigInt(value);
-    return num.toLocaleString();
-  } catch (e) {
-    return value;
-  }
-}
+export default TradeTable;
