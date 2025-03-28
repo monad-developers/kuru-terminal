@@ -23,6 +23,13 @@ export default createConfig({
     KuruOrderBookAbi: {
       abi: KuruOrderBookAbi,
       network: "monadTestnet",
+      address: [
+        "0xD3AF145f1Aa1A471b5f0F62c52Cf8fcdc9AB55D3", // MONUSDC
+        "0x94B72620e65577De5FB2b8a8B93328CAf6Ca161b", // DAKMON
+        "0x277bF4a0AAc16f19d7bf592FeFFc8D2d9a890508", // CHOGMON
+        "0xD5C1Dc181c359f0199c83045A85Cd2556B325De0", // YAKIMON
+        // Add more contract addresses here
+      ],
       filter: {
         event: "Trade",
         args: {},
