@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import QueryProvider from "@/providers/QueryProvider";
-import ThemeProvider from "@/providers/ThemeProvider";
+import { ThemeProvider } from "next-themes";
 
 import "./globals.css";
 
@@ -16,11 +16,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <QueryProvider>
-        <ThemeProvider>
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="dark"
+        enableSystem
+        disableTransitionOnChange
+      >
+        <QueryProvider>
           <body className="container mx-auto">{children}</body>
-        </ThemeProvider>
-      </QueryProvider>
+        </QueryProvider>
+      </ThemeProvider>
     </html>
   );
 }
