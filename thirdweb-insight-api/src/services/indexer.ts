@@ -142,7 +142,7 @@ async function fetchEvents(contractAddress: string, fromBlock: number): Promise<
     let currentPage = 0;
     let hasMoreData = true; // Flag to control pagination loop
     const pageLimit = 100; // Maximum events per page
-    const MAX_PAGES = 5; // Safety limit to prevent stack memory overflow
+    const MAX_PAGES = 10; // Safety limit to prevent stack memory overflow
 
     // Track events for deduplication (hash+address+topics)
     const seenEvents = new Set<string>();
@@ -193,6 +193,8 @@ async function fetchEvents(contractAddress: string, fromBlock: number): Promise<
             seenEvents.add(eventKey);
             return true;
           });
+
+          // TODO: Might be some bug here
 
           allEvents = [...allEvents, ...newEvents];
           logger.info(`Fetched page ${currentPage} for contract ${contractAddress}: ${data.length} events (${newEvents.length} new, ${data.length - newEvents.length} duplicates)`);
