@@ -1,9 +1,9 @@
 "use client";
 
 import React, { createContext, useContext, useState, useCallback } from 'react';
-import { Tab } from '@/enums/tab.enum';
-import { useAlliumTrades } from '@/hooks/useAlliumTrades';
-import type { Trade } from '@/types/trade.interface';
+import { Tab } from '@/src/enums/tab.enum';
+import { useAlliumTrades } from '@/src/hooks/useAlliumTrades';
+import type { Trade } from '@/src/types/trade.interface';
 
 // Define the context type with app state and actions
 interface AppContextType {

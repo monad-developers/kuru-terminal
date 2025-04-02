@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
-import TradeTable from "@/components/TradeTable";
-import { getTradesFromSubgraphApi } from "@/utils/api.util";
-import { THEGRAPH_SUBGRAPH_URL } from "@/config/env.config";
+import TradeTable from "@/src/components/TradeTable";
+import { getTradesFromSubgraphApi } from "@/src/utils/api.util";
+import { THEGRAPH_SUBGRAPH_URL } from "@/src/config/env.config";
 
 const TheGraphSubgraphTrades = ({
   limit,

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import QueryProvider from "@/providers/QueryProvider";
-import { AppProvider } from "@/providers/AppProvider";
+import QueryProvider from "@/src/providers/QueryProvider";
+import { AppProvider } from "@/src/providers/AppProvider";
 import { ThemeProvider } from "next-themes";
 
 import "./globals.css";

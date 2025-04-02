@@ -1,15 +1,15 @@
 "use client";
 
-import EnvioHyperIndexTrades from "@/components/EnvioHyperIndexTrades";
-import PonderTrades from "@/components/PonderTrades";
-import TheGraphSubgraphTrades from "@/components/TheGraphSubgraphTrades";
-import GoldskySubgraphTrades from "@/components/GoldskySubgraphTrades";
+import EnvioHyperIndexTrades from "@/src/components/EnvioHyperIndexTrades";
+import PonderTrades from "@/src/components/PonderTrades";
+import TheGraphSubgraphTrades from "@/src/components/TheGraphSubgraphTrades";
+import GoldskySubgraphTrades from "@/src/components/GoldskySubgraphTrades";
 import AlchemySubgraphTrades from "./AlchemySubgraphTrades";
 import AlliumWSTrades from "./AlliumWSTrades";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Slider } from "@/components/ui/slider";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/src/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card";
+import { Slider } from "@/src/components/ui/slider";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/src/components/ui/tabs";
 import {
   ENVIO_HYPERINDEX_API_URL,
   PONDER_GRAPHQL_API_URL,
@@ -17,9 +17,9 @@ import {
   GOLDSKY_SUBGRAPH_URL,
   ALCHEMY_SUBGRAPH_URL,
   ALLIUM_WS_URL,
-} from "@/config/env.config";
-import { Tab } from "@/enums/tab.enum";
-import { useApp } from "@/providers/AppProvider";
+} from "@/src/config/env.config";
+import { Tab } from "@/src/enums/tab.enum";
+import { useApp } from "@/src/providers/AppProvider";
 
 const TradeComparison = () => {
   const {

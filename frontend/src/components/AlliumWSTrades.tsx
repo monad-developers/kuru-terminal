@@ -1,8 +1,8 @@
 "use client";
 
 import React from 'react';
-import TradeTable from "@/components/TradeTable";
-import { useTrades } from '@/providers/AppProvider';
+import TradeTable from "@/src/components/TradeTable";
+import { useTrades } from '@/src/providers/AppProvider';
 
 const AlliumWSTrades = () => {
   const { alliumTrades, alliumConnected, alliumError, alliumLoading } = useTrades();

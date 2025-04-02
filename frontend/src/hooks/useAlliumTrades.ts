@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect, useRef } from 'react';
-import { ALLIUM_WS_URL } from '@/config/env.config';
-import { Trade } from '@/types/trade.interface';
+import { ALLIUM_WS_URL } from '@/src/config/env.config';
+import { Trade } from '@/src/types/trade.interface';
 
 // Trade type from WebSocket data
 export interface AlliumTrade {

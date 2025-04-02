@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import TradeTable from "@/components/TradeTable";
-import { ENVIO_HYPERINDEX_API_URL } from "@/config/env.config";
+import TradeTable from "@/src/components/TradeTable";
+import { ENVIO_HYPERINDEX_API_URL } from "@/src/config/env.config";
 import type { Trade } from "@/db/types";
 
 export async function getTradesFromEnvioHyperIndex(

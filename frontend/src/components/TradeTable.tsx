@@ -1,5 +1,5 @@
 import { ArrowDown, ArrowUp } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { Badge } from "@/src/components/ui/badge";
 import {
   Table,
   TableBody,
@@ -7,8 +7,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import type { Trade } from "@/types/trade.interface";
+} from "@/src/components/ui/table";
+import type { Trade } from "@/src/types/trade.interface";
 
 function TradeTableSkeleton() {
   return (
