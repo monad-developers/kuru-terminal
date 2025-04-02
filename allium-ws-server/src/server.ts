@@ -14,6 +14,7 @@ import {
     KafkaConsumerEvents,
     KafkaConfig
 } from './types';
+import tradingPairsConfig from '../config/trading-pairs.json';
 
 dotenv.config();
 
@@ -25,11 +26,18 @@ class EventStreamServer {
     private readonly kafkaConsumer: KafkaConsumer;
     private readonly connectedClients: Set<WSClient> = new Set();
     private readonly eventTopicMap: Map<string, SupportedEvent>;
+    private readonly validContractAddresses: Set<string>; // Kuru Order Book deployment addresses
 
     private constructor(wss: WebSocketServer, kafkaConsumer: KafkaConsumer, eventTopicMap: Map<string, SupportedEvent>) {
         this.wss = wss;
         this.kafkaConsumer = kafkaConsumer;
         this.eventTopicMap = eventTopicMap;
+        this.validContractAddresses = new Set(
+            tradingPairsConfig.tradingPairs.map(pair => pair.address.toLowerCase())
+        );
+        
+        console.log(`Filtering events for ${this.validContractAddresses.size} contract addresses:`, 
+            Array.from(this.validContractAddresses));
 
         this.initializeWebSocketHandlers();
         this.initializeKafkaHandlers();
@@ -197,6 +205,10 @@ class EventStreamServer {
         const topics = [log.topic0, log.topic1, log.topic2, log.topic3].filter(topic => topic !== null);
 
         if (!topics[0] || !log.data) return null;
+
+        // Check if the log comes from a valid contract address
+        const contractAddress = log.address.toLowerCase();
+        if (!this.validContractAddresses.has(contractAddress)) return null;
 
         const eventTopic = topics[0].toLowerCase();
         const eventName = this.eventTopicMap.get(eventTopic);
