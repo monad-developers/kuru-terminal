@@ -225,8 +225,9 @@ class EventStreamServer {
             return {
                 type: eventName,
                 blockNumber: log.block_number,
+                transactionHash: log.transaction_hash,
                 data: this.formatEventData(log.address, eventName, decodedLog),
-                timestamp: Date.now()
+                blockTimestamp: log.block_timestamp
             };
         } catch (error) {
             console.error('Error processing event:', error);

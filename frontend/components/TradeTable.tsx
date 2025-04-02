@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { Trade } from "@/db/types";
+import type { Trade } from "@/types/trade.interface";
 
 function TradeTableSkeleton() {
   return (
@@ -78,6 +78,7 @@ const TradeTable = ({ trades, isLoading = false }: TradeTableProps) => {
             <TableHead>Maker</TableHead>
             <TableHead>Taker</TableHead>
             <TableHead>Block Height</TableHead>
+            <TableHead>Transaction Hash</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -115,6 +116,11 @@ const TradeTable = ({ trades, isLoading = false }: TradeTableProps) => {
                   {truncate(trade.takerAddress ?? "", 8)}
                 </TableCell>
                 <TableCell>{trade.blockHeight}</TableCell>
+                <TableCell>
+                  <a href={`https://monad-testnet.socialscan.io/tx/${trade.transactionHash}`} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                    {truncate(trade.transactionHash ?? "", 8)}
+                  </a>
+                </TableCell>
               </TableRow>
             ))
           )}

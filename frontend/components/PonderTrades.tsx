@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import TradeTable from "@/components/TradeTable";
 import { PONDER_GRAPHQL_API_URL } from "@/config/env.config";
-import type { Trade } from "@/db/types";
+import type { Trade } from "@/types/trade.interface";
 
 async function getTradesFromPonderApi(
   limit: number,

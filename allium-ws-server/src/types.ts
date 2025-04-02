@@ -63,8 +63,9 @@ export interface BlockchainLog {
 export interface ProcessedEvent {
   type: SupportedEvent;
   blockNumber: number;
+  transactionHash: string;
   data: EventData[SupportedEvent];
-  timestamp: number;
+  blockTimestamp: number;
 }
 
 export interface EventData {

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import QueryProvider from "@/providers/QueryProvider";
+import { AppProvider } from "@/providers/AppProvider";
 import { ThemeProvider } from "next-themes";
 
 import "./globals.css";
@@ -23,7 +24,9 @@ export default function RootLayout({
         disableTransitionOnChange
       >
         <QueryProvider>
-          <body className="container mx-auto">{children}</body>
+          <AppProvider>
+            <body className="container mx-auto">{children}</body>
+          </AppProvider>
         </QueryProvider>
       </ThemeProvider>
     </html>

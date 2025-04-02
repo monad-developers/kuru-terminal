@@ -5,25 +5,34 @@ import PonderTrades from "@/components/PonderTrades";
 import TheGraphSubgraphTrades from "@/components/TheGraphSubgraphTrades";
 import GoldskySubgraphTrades from "@/components/GoldskySubgraphTrades";
 import AlchemySubgraphTrades from "./AlchemySubgraphTrades";
+import AlliumWSTrades from "./AlliumWSTrades";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useState } from "react";
 import {
   ENVIO_HYPERINDEX_API_URL,
   PONDER_GRAPHQL_API_URL,
   THEGRAPH_SUBGRAPH_URL,
   GOLDSKY_SUBGRAPH_URL,
   ALCHEMY_SUBGRAPH_URL,
+  ALLIUM_WS_URL,
 } from "@/config/env.config";
 import { Tab } from "@/enums/tab.enum";
+import { useApp } from "@/providers/AppProvider";
 
 const TradeComparison = () => {
-  const [activeTab, setActiveTab] = useState<Tab>(Tab.PONDER);
-  const [refetchInterval, setRefetchInterval] = useState<number>(1000); // ms
-  const [enabled, setEnabled] = useState<boolean>(false);
-  const [limit, setLimit] = useState<number>(20);
+  const {
+    activeTab,
+    setActiveTab,
+    refetchInterval,
+    setRefetchInterval,
+    enabled,
+    setEnabled,
+    limit,
+    setLimit,
+    isSourceActive
+  } = useApp();
 
   const handleTabChange = (value: string) => {
     setActiveTab(value as Tab);
@@ -84,124 +93,147 @@ const TradeComparison = () => {
           </div>
         </div>
       </CardHeader>
-      <CardContent>
-        <Tabs
-          defaultValue={Tab.PONDER}
-          value={activeTab}
-          onValueChange={handleTabChange}
-        >
-          <div className="flex justify-between items-center mb-4">
-            <TabsList>
-              <TabsTrigger value={Tab.PONDER}>
-                Ponder Subgraph
-              </TabsTrigger>
-              <TabsTrigger value={Tab.ENVIO_HYPERINDEX}>
-                Envio Subgraph
-              </TabsTrigger>
-              <TabsTrigger value={Tab.THEGRAPH_SUBGRAPH}>
-                The Graph Subgraph
-              </TabsTrigger>
-              <TabsTrigger value={Tab.GOLDSKY_SUBGRAPH}>
-                Goldsky Subgraph
-              </TabsTrigger>
-              <TabsTrigger value={Tab.ALCHEMY_SUBGRAPH}>
-                Alchemy Subgraph
-              </TabsTrigger>
-            </TabsList>
-          </div>
 
-          <TabsContent value={Tab.PONDER}>
-            <div className="mb-4 p-4 bg-muted/40 rounded-md">
-              <h3 className="font-medium mb-1">Ponder Subgraph</h3>
-              <p className="text-sm text-muted-foreground">
-                This tab fetches trade data using ponder's GraphQL API hosted on{" "}
-                <a href={PONDER_GRAPHQL_API_URL} className="underline">
-                  {PONDER_GRAPHQL_API_URL}
-                </a>
-                . Check out <code>./indexer/README.md</code> for more
-                information on how to run the indexer.
-              </p>
+      {enabled ? (
+        <CardContent>
+          <Tabs
+            defaultValue={Tab.PONDER}
+            value={activeTab}
+            onValueChange={handleTabChange}
+          >
+            <div className="flex justify-between items-center mb-4">
+              <TabsList>
+                <TabsTrigger value={Tab.PONDER}>
+                  Ponder Subgraph
+                </TabsTrigger>
+                <TabsTrigger value={Tab.ENVIO_HYPERINDEX}>
+                  Envio Subgraph
+                </TabsTrigger>
+                <TabsTrigger value={Tab.THEGRAPH_SUBGRAPH}>
+                  The Graph Subgraph
+                </TabsTrigger>
+                <TabsTrigger value={Tab.GOLDSKY_SUBGRAPH}>
+                  Goldsky Subgraph
+                </TabsTrigger>
+                <TabsTrigger value={Tab.ALCHEMY_SUBGRAPH}>
+                  Alchemy Subgraph
+                </TabsTrigger>
+                <TabsTrigger value={Tab.ALLIUM_WS}>
+                  Allium WebSocket
+                </TabsTrigger>
+              </TabsList>
             </div>
-            <PonderTrades
-              limit={limit}
-              refetchInterval={refetchInterval}
-              enabled={activeTab === Tab.PONDER && enabled}
-            />
-          </TabsContent>
 
-          <TabsContent value={Tab.ENVIO_HYPERINDEX}>
-            <div className="mb-4 p-4 bg-muted/40 rounded-md">
-              <h3 className="font-medium mb-1">Envio Subgraph</h3>
-              <p className="text-sm text-muted-foreground">
-                This tab fetches trade data using Envio's GraphQL API hosted on{" "}
-                <a href={ENVIO_HYPERINDEX_API_URL} className="underline">
-                  {ENVIO_HYPERINDEX_API_URL}
-                </a>
-                . Check out <code>./envio/README.md</code> for more information
-                on how to run the indexer.
-              </p>
-            </div>
-            <EnvioHyperIndexTrades
-              limit={limit}
-              refetchInterval={refetchInterval}
-              enabled={activeTab === Tab.ENVIO_HYPERINDEX && enabled}
-            />
-          </TabsContent>
+            <TabsContent value={Tab.PONDER}>
+              <div className="mb-4 p-4 bg-muted/40 rounded-md">
+                <h3 className="font-medium mb-1">Ponder Subgraph</h3>
+                <p className="text-sm text-muted-foreground">
+                  This tab fetches trade data using ponder's GraphQL API hosted on{" "}
+                  <a href={PONDER_GRAPHQL_API_URL} className="underline">
+                    {PONDER_GRAPHQL_API_URL}
+                  </a>
+                  . Check out <code>./indexer/README.md</code> for more
+                  information on how to run the indexer.
+                </p>
+              </div>
+              <PonderTrades
+                limit={limit}
+                refetchInterval={refetchInterval}
+                enabled={isSourceActive(Tab.PONDER)}
+              />
+            </TabsContent>
 
-          <TabsContent value={Tab.THEGRAPH_SUBGRAPH}>
-            <div className="mb-4 p-4 bg-muted/40 rounded-md">
-              <h3 className="font-medium mb-1">The Graph Subgraph</h3>
-              <p className="text-sm  text-muted-foreground">
-                This tab fetches trade data using The Graph's API hosted on{" "}
-                <a href={THEGRAPH_SUBGRAPH_URL} className="underline">
-                  {THEGRAPH_SUBGRAPH_URL}
-                </a>
-                . Check out <code>./thegraph/README.md</code> for more
-                information on how to run the indexer.
-              </p>
-            </div>
-            <TheGraphSubgraphTrades
-              limit={limit}
-              refetchInterval={refetchInterval}
-              enabled={activeTab === Tab.THEGRAPH_SUBGRAPH && enabled}
-            />
-          </TabsContent>
+            <TabsContent value={Tab.ENVIO_HYPERINDEX}>
+              <div className="mb-4 p-4 bg-muted/40 rounded-md">
+                <h3 className="font-medium mb-1">Envio Subgraph</h3>
+                <p className="text-sm text-muted-foreground">
+                  This tab fetches trade data using Envio's GraphQL API hosted on{" "}
+                  <a href={ENVIO_HYPERINDEX_API_URL} className="underline">
+                    {ENVIO_HYPERINDEX_API_URL}
+                  </a>
+                  . Check out <code>./envio/README.md</code> for more information
+                  on how to run the indexer.
+                </p>
+              </div>
+              <EnvioHyperIndexTrades
+                limit={limit}
+                refetchInterval={refetchInterval}
+                enabled={isSourceActive(Tab.ENVIO_HYPERINDEX)}
+              />
+            </TabsContent>
 
-          <TabsContent value={Tab.GOLDSKY_SUBGRAPH}>
-            <div className="mb-4 p-4 bg-muted/40 rounded-md">
-              <h3 className="font-medium mb-1">Goldsky Subgraph</h3>
-              <p className="text-sm  text-muted-foreground">
-                This tab fetches trade data using Goldsky's API hosted on{" "}
-                <a href={GOLDSKY_SUBGRAPH_URL} className="underline">
-                  {GOLDSKY_SUBGRAPH_URL}
-                </a>
-                . Check out <code>./goldsky/README.md</code> for more
-                information on how to run the indexer.
-              </p>
-            </div>
-            <GoldskySubgraphTrades
-              limit={limit}
-              refetchInterval={refetchInterval}
-              enabled={activeTab === Tab.GOLDSKY_SUBGRAPH && enabled}
-            />
-          </TabsContent>
+            <TabsContent value={Tab.THEGRAPH_SUBGRAPH}>
+              <div className="mb-4 p-4 bg-muted/40 rounded-md">
+                <h3 className="font-medium mb-1">The Graph Subgraph</h3>
+                <p className="text-sm  text-muted-foreground">
+                  This tab fetches trade data using The Graph's API hosted on{" "}
+                  <a href={THEGRAPH_SUBGRAPH_URL} className="underline">
+                    {THEGRAPH_SUBGRAPH_URL}
+                  </a>
+                  . Check out <code>./thegraph/README.md</code> for more
+                  information on how to run the indexer.
+                </p>
+              </div>
+              <TheGraphSubgraphTrades
+                limit={limit}
+                refetchInterval={refetchInterval}
+                enabled={isSourceActive(Tab.THEGRAPH_SUBGRAPH)}
+              />
+            </TabsContent>
 
-          <TabsContent value={Tab.ALCHEMY_SUBGRAPH}>
-            <div className="mb-4 p-4 bg-muted/40 rounded-md">
-              <h3 className="font-medium mb-1">Alchemy Subgraph</h3>
-              <p className="text-sm  text-muted-foreground">
-                This tab fetches trade data using Alchemy's API hosted on{" "}
-                {ALCHEMY_SUBGRAPH_URL}
-              </p>
-            </div>
-            <AlchemySubgraphTrades
-              limit={limit}
-              refetchInterval={refetchInterval}
-              enabled={activeTab === Tab.ALCHEMY_SUBGRAPH && enabled}
-            />
-          </TabsContent>
-        </Tabs>
-      </CardContent>
+            <TabsContent value={Tab.GOLDSKY_SUBGRAPH}>
+              <div className="mb-4 p-4 bg-muted/40 rounded-md">
+                <h3 className="font-medium mb-1">Goldsky Subgraph</h3>
+                <p className="text-sm  text-muted-foreground">
+                  This tab fetches trade data using Goldsky's API hosted on{" "}
+                  <a href={GOLDSKY_SUBGRAPH_URL} className="underline">
+                    {GOLDSKY_SUBGRAPH_URL}
+                  </a>
+                  . Check out <code>./goldsky/README.md</code> for more
+                  information on how to run the indexer.
+                </p>
+              </div>
+              <GoldskySubgraphTrades
+                limit={limit}
+                refetchInterval={refetchInterval}
+                enabled={isSourceActive(Tab.GOLDSKY_SUBGRAPH)}
+              />
+            </TabsContent>
+
+            <TabsContent value={Tab.ALCHEMY_SUBGRAPH}>
+              <div className="mb-4 p-4 bg-muted/40 rounded-md">
+                <h3 className="font-medium mb-1">Alchemy Subgraph</h3>
+                <p className="text-sm  text-muted-foreground">
+                  This tab fetches trade data using Alchemy's API hosted on{" "}
+                  {ALCHEMY_SUBGRAPH_URL}
+                </p>
+              </div>
+              <AlchemySubgraphTrades
+                limit={limit}
+                refetchInterval={refetchInterval}
+                enabled={isSourceActive(Tab.ALCHEMY_SUBGRAPH)}
+              />
+            </TabsContent>
+
+            <TabsContent value={Tab.ALLIUM_WS}>
+              <div className="mb-4 p-4 bg-muted/40 rounded-md">
+                <h3 className="font-medium mb-1">Allium WebSocket</h3>
+                <p className="text-sm text-muted-foreground">
+                  This tab displays real-time trade data using Allium's WebSocket API at{" "}
+                  <span className="font-mono text-xs">{ALLIUM_WS_URL}</span>.
+                  The data is streamed in real-time from the Kafka consumer
+                  which is monitoring blockchain events.
+                </p>
+              </div>
+              <AlliumWSTrades />
+            </TabsContent>
+          </Tabs>
+        </CardContent>
+      ) : (
+        <CardContent>
+          <p className="text-muted-foreground text-center">Please enable data sources to view trades</p>
+        </CardContent>
+      )}
     </Card>
   );
 };
