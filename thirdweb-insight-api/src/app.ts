@@ -13,8 +13,8 @@ import {
   upgraded,
   contractBlockTracker,
 } from "./db/schema";
-import { startIndexer } from "./services/indexer";
-import { getEvents } from "./services/eventRepository";
+import { startIndexer } from "./services/indexer.service";
+import { getEvents } from "./services/event-repository.service";
 import { EventQueryParams, KuruEvents } from "./types";
 import { isValidEventType, isValidSortOrder } from "./utils/indexer.util";
 import { createLogger } from "./utils/logger.util";

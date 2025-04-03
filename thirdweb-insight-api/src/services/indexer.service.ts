@@ -3,7 +3,7 @@ import { db } from "../db/drizzle";
 import { contractBlockTracker } from "../db/schema";
 import { eq, and, sql } from "drizzle-orm";
 import { InsightAPIResponse, RawLog, TradingPairsConfig } from "../types";
-import { processEvents } from "./eventProcessor";
+import { processEvents } from "./event-processor.service";
 import tradingPairConfig from "../../config/trading-pairs.json";
 import { MONAD_TESTNET_CHAIN_ID } from "../constants";
 import { createLogger } from "../utils/logger.util";
@@ -194,8 +194,8 @@ async function fetchEvents(contractAddress: string, fromBlock: number): Promise<
               highestBlockSeen = event.block_number;
             }
 
-            // Check for duplicates
-            const eventKey = `${event.transaction_hash}:${event.address}:${event.topics.join(',')}`;
+            // Check for duplicates using transaction_hash and log_index as unique identifier
+            const eventKey = `${event.transaction_hash}:${event.log_index}`;
             if (!seenEvents.has(eventKey)) {
               // New event - add to results
               seenEvents.add(eventKey);

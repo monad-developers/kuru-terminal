@@ -36,6 +36,7 @@ function decodeEventData(log: RawLog): KuruEvent | null {
       block_number: log.block_number,
       transaction_hash: log.transaction_hash,
       order_book_address: log.address,
+      log_index: log.log_index,
     };
 
     switch (eventTopic) {
@@ -218,11 +219,12 @@ async function processTrades(tx: PgTransaction, events: RawLog[]): Promise<void>
   if (tradeEvents.length > 0) {
     logger.debug(`Inserting ${tradeEvents.length} trade events`);
     await tx.insert(trade).values(tradeEvents).onConflictDoUpdate({
-      target: [trade.transaction_hash, trade.order_book_address],
+      target: [trade.transaction_hash, trade.log_index],
       set: {
         block_number: sql.raw(`excluded.${trade.block_number.name}`),
         transaction_hash: sql.raw(`excluded.${trade.transaction_hash.name}`),
         order_book_address: sql.raw(`excluded.${trade.order_book_address.name}`),
+        log_index: sql.raw(`excluded.${trade.log_index.name}`),
         order_id: sql.raw(`excluded.${trade.order_id.name}`),
         maker_address: sql.raw(`excluded.${trade.maker_address.name}`),
         is_buy: sql.raw(`excluded.${trade.is_buy.name}`),
@@ -254,11 +256,12 @@ async function processOrderCreated(tx: PgTransaction, events: RawLog[]): Promise
   if (orderCreatedEvents.length > 0) {
     logger.debug(`Inserting ${orderCreatedEvents.length} orderCreated events`);
     await tx.insert(orderCreated).values(orderCreatedEvents).onConflictDoUpdate({
-      target: [orderCreated.transaction_hash, orderCreated.order_book_address],
+      target: [orderCreated.transaction_hash, orderCreated.log_index],
       set: {
         block_number: sql.raw(`excluded.${orderCreated.block_number.name}`),
         transaction_hash: sql.raw(`excluded.${orderCreated.transaction_hash.name}`),
         order_book_address: sql.raw(`excluded.${orderCreated.order_book_address.name}`),
+        log_index: sql.raw(`excluded.${orderCreated.log_index.name}`),
         order_id: sql.raw(`excluded.${orderCreated.order_id.name}`),
         owner: sql.raw(`excluded.${orderCreated.owner.name}`),
         size: sql.raw(`excluded.${orderCreated.size.name}`),
@@ -287,11 +290,12 @@ async function processOrdersCanceled(tx: PgTransaction, events: RawLog[]): Promi
   if (ordersCanceledEvents.length > 0) {
     logger.debug(`Inserting ${ordersCanceledEvents.length} ordersCanceled events`);
     await tx.insert(ordersCanceled).values(ordersCanceledEvents).onConflictDoUpdate({
-      target: [ordersCanceled.transaction_hash, ordersCanceled.order_book_address],
+      target: [ordersCanceled.transaction_hash, ordersCanceled.log_index],
       set: {
         block_number: sql.raw(`excluded.${ordersCanceled.block_number.name}`),
         transaction_hash: sql.raw(`excluded.${ordersCanceled.transaction_hash.name}`),
         order_book_address: sql.raw(`excluded.${ordersCanceled.order_book_address.name}`),
+        log_index: sql.raw(`excluded.${ordersCanceled.log_index.name}`),
         order_ids: sql.raw(`excluded.${ordersCanceled.order_ids.name}`),
         owner: sql.raw(`excluded.${ordersCanceled.owner.name}`)
       }
@@ -317,11 +321,12 @@ async function processInitialized(tx: PgTransaction, events: RawLog[]): Promise<
   if (initializedEvents.length > 0) {
     logger.debug(`Inserting ${initializedEvents.length} initialized events`);
     await tx.insert(initialized).values(initializedEvents).onConflictDoUpdate({
-      target: [initialized.transaction_hash, initialized.order_book_address],
+      target: [initialized.transaction_hash, initialized.log_index],
       set: {
         block_number: sql.raw(`excluded.${initialized.block_number.name}`),
         transaction_hash: sql.raw(`excluded.${initialized.transaction_hash.name}`),
         order_book_address: sql.raw(`excluded.${initialized.order_book_address.name}`),
+        log_index: sql.raw(`excluded.${initialized.log_index.name}`),
         version: sql.raw(`excluded.${initialized.version.name}`)
       }
     });
@@ -346,11 +351,12 @@ async function processOwnershipHandoverCanceled(tx: PgTransaction, events: RawLo
   if (ownershipHandoverCanceledEvents.length > 0) {
     logger.debug(`Inserting ${ownershipHandoverCanceledEvents.length} ownershipHandoverCanceled events`);
     await tx.insert(ownershipHandoverCanceled).values(ownershipHandoverCanceledEvents).onConflictDoUpdate({
-      target: [ownershipHandoverCanceled.transaction_hash, ownershipHandoverCanceled.order_book_address],
+      target: [ownershipHandoverCanceled.transaction_hash, ownershipHandoverCanceled.log_index],
       set: {
         block_number: sql.raw(`excluded.${ownershipHandoverCanceled.block_number.name}`),
         transaction_hash: sql.raw(`excluded.${ownershipHandoverCanceled.transaction_hash.name}`),
         order_book_address: sql.raw(`excluded.${ownershipHandoverCanceled.order_book_address.name}`),
+        log_index: sql.raw(`excluded.${ownershipHandoverCanceled.log_index.name}`),
         pending_owner: sql.raw(`excluded.${ownershipHandoverCanceled.pending_owner.name}`)
       }
     });
@@ -375,11 +381,12 @@ async function processOwnershipHandoverRequested(tx: PgTransaction, events: RawL
   if (ownershipHandoverRequestedEvents.length > 0) {
     logger.debug(`Inserting ${ownershipHandoverRequestedEvents.length} ownershipHandoverRequested events`);
     await tx.insert(ownershipHandoverRequested).values(ownershipHandoverRequestedEvents).onConflictDoUpdate({
-      target: [ownershipHandoverRequested.transaction_hash, ownershipHandoverRequested.order_book_address],
+      target: [ownershipHandoverRequested.transaction_hash, ownershipHandoverRequested.log_index],
       set: {
         block_number: sql.raw(`excluded.${ownershipHandoverRequested.block_number.name}`),
         transaction_hash: sql.raw(`excluded.${ownershipHandoverRequested.transaction_hash.name}`),
         order_book_address: sql.raw(`excluded.${ownershipHandoverRequested.order_book_address.name}`),
+        log_index: sql.raw(`excluded.${ownershipHandoverRequested.log_index.name}`),
         pending_owner: sql.raw(`excluded.${ownershipHandoverRequested.pending_owner.name}`)
       }
     });
@@ -404,11 +411,12 @@ async function processOwnershipTransferred(tx: PgTransaction, events: RawLog[]):
   if (ownershipTransferredEvents.length > 0) {
     logger.debug(`Inserting ${ownershipTransferredEvents.length} ownershipTransferred events`);
     await tx.insert(ownershipTransferred).values(ownershipTransferredEvents).onConflictDoUpdate({
-      target: [ownershipTransferred.transaction_hash, ownershipTransferred.order_book_address],
+      target: [ownershipTransferred.transaction_hash, ownershipTransferred.log_index],
       set: {
         block_number: sql.raw(`excluded.${ownershipTransferred.block_number.name}`),
         transaction_hash: sql.raw(`excluded.${ownershipTransferred.transaction_hash.name}`),
         order_book_address: sql.raw(`excluded.${ownershipTransferred.order_book_address.name}`),
+        log_index: sql.raw(`excluded.${ownershipTransferred.log_index.name}`),
         old_owner: sql.raw(`excluded.${ownershipTransferred.old_owner.name}`),
         new_owner: sql.raw(`excluded.${ownershipTransferred.new_owner.name}`)
       }
@@ -434,11 +442,12 @@ async function processUpgraded(tx: PgTransaction, events: RawLog[]): Promise<voi
   if (upgradedEvents.length > 0) {
     logger.debug(`Inserting ${upgradedEvents.length} upgraded events`);
     await tx.insert(upgraded).values(upgradedEvents).onConflictDoUpdate({
-      target: [upgraded.transaction_hash, upgraded.order_book_address],
+      target: [upgraded.transaction_hash, upgraded.log_index],
       set: {
         block_number: sql.raw(`excluded.${upgraded.block_number.name}`),
         transaction_hash: sql.raw(`excluded.${upgraded.transaction_hash.name}`),
         order_book_address: sql.raw(`excluded.${upgraded.order_book_address.name}`),
+        log_index: sql.raw(`excluded.${upgraded.log_index.name}`),
         implementation: sql.raw(`excluded.${upgraded.implementation.name}`)
       }
     });

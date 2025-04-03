@@ -1,7 +1,7 @@
 import app from "./app";
 import dotenv from "dotenv";
 import { createLogger } from "./utils/logger.util";
-import { stopIndexer } from "./services/indexer";
+import { stopIndexer } from "./services/indexer.service";
 
 // Create logger for this module
 const logger = createLogger('Server');
