@@ -6,8 +6,6 @@
     "build": "tsc --outDir dist",
     "start": "node dist/server.js",
     "dev": "ts-node src/server.ts",
-    "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
     "test": "ts-node tests/client.ts"
   },
   "dependencies": {
