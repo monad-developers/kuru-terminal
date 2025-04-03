@@ -10,11 +10,10 @@ export interface LogEntry {
   removed: boolean;
 }
 
-export interface EventRequestBody {
-  data: LogEntry[][][];
-}
-
 export interface TradeEvent {
+  blockHeight: string;
+  orderBookAddress: string;
+  transactionHash: string;
   orderId: string;
   makerAddress: string;
   isBuy: boolean;
@@ -23,6 +22,4 @@ export interface TradeEvent {
   takerAddress: string;
   txOrigin: string;
   filledSize: string;
-  blockHeight: string;
-  orderBookAddress: string;
 }

@@ -1,4 +1,4 @@
-import { orderCreated, initialized, ordersCanceled, ownershipHandoverCanceled, ownershipHandoverRequested, ownershipTransferred, trade, upgraded } from "./goldsky-schema";
+import { orderCreated, initialized, ordersCanceled, ownershipHandoverCanceled, ownershipHandoverRequested, ownershipTransferred, trade, upgraded } from "./schema";
 
 export type TradeEvent = typeof trade.$inferSelect;
 export type OrderCreatedEvent = typeof orderCreated.$inferSelect;

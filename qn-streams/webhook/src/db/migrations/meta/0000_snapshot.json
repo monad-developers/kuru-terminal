@@ -1,12 +1,12 @@
 {
-  "id": "2a0fcad3-7f9e-4cc3-8685-1a4c569898d7",
+  "id": "7b96a367-2d02-4aae-8992-78dd9ce94eb3",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "quicknode.trade": {
+    "public.trade": {
       "name": "trade",
-      "schema": "quicknode",
+      "schema": "",
       "columns": {
         "id": {
           "name": "id",
@@ -16,7 +16,7 @@
           "identity": {
             "type": "always",
             "name": "trade_id_seq",
-            "schema": "quicknode",
+            "schema": "public",
             "increment": "1",
             "startWith": "1",
             "minValue": "1",
@@ -24,6 +24,24 @@
             "cache": "1",
             "cycle": false
           }
+        },
+        "transaction_hash": {
+          "name": "transaction_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "block_height": {
+          "name": "block_height",
+          "type": "numeric(78, 0)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "order_book_address": {
+          "name": "order_book_address",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
         },
         "order_id": {
           "name": "order_id",
@@ -72,18 +90,6 @@
           "type": "numeric(78, 0)",
           "primaryKey": false,
           "notNull": false
-        },
-        "block_height": {
-          "name": "block_height",
-          "type": "numeric(78, 0)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "order_book_address": {
-          "name": "order_book_address",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
         }
       },
       "indexes": {},
@@ -96,9 +102,7 @@
     }
   },
   "enums": {},
-  "schemas": {
-    "quicknode": "quicknode"
-  },
+  "schemas": {},
   "sequences": {},
   "roles": {},
   "policies": {},

@@ -1,3 +1,3 @@
-import { trade } from "./quicknode-schema";
+import { trade } from "./schema";
 
 export type Trade = typeof trade.$inferSelect;

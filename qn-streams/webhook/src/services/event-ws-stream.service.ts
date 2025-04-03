@@ -1,5 +1,5 @@
 import { WebSocket, WebSocketServer } from 'ws';
-import { KuruEvents } from '../types';
+import { TradeEvent } from '../types';
 
 // Extended WebSocket interface with the isAlive flag for heartbeat
 interface WSClient extends WebSocket {
@@ -7,7 +7,7 @@ interface WSClient extends WebSocket {
 }
 
 /**
- * WebSocket stream service for broadcasting Kuru events to connected clients
+ * WebSocket stream service for broadcasting trade events to connected clients
  */
 export class EventWsStream {
   private readonly wss: WebSocketServer;
@@ -25,7 +25,7 @@ export class EventWsStream {
    * Creates a WebSocket server instance
    */
   private createWebSocketServer(port: number): WebSocketServer {
-    return new WebSocketServer({ 
+    return new WebSocketServer({
       port,
       verifyClient: () => {
         // Allow all origins
@@ -39,7 +39,7 @@ export class EventWsStream {
    */
   private initializeWebSocketHandlers(): void {
     console.log(`[${new Date().toISOString()}] WebSocket server initialized and listening for connections...`);
-    
+
     this.wss.on('connection', (ws: WebSocket) => {
       console.log(`[${new Date().toISOString()}] New client connected`);
       const client = ws as WSClient;
@@ -86,22 +86,25 @@ export class EventWsStream {
   }
 
   /**
-   * Broadcast events to all connected clients
+   * Broadcast trade events to all connected clients
    */
-  public broadcastEvents(events: KuruEvents): void {
+  public broadcastTradeEvents(tradeEvents: TradeEvent[]): void {
     if (this.connectedClients.size === 0) {
       return; // No clients connected
     }
 
-    console.log(`[${new Date().toISOString()}] Broadcasting events to ${this.connectedClients.size} connected clients`);
-    
+    console.log(`[${new Date().toISOString()}] Broadcasting ${tradeEvents.length} trade events to ${this.connectedClients.size} connected clients`);
+
     // Format events for broadcasting
     const eventData = {
       type: 'events',
       timestamp: new Date().toISOString(),
-      events
+      events: {
+        trade: tradeEvents,
+        // Note: Other events can be added here as needed
+      }
     };
-    
+
     const message = JSON.stringify(eventData);
     this.connectedClients.forEach(client => {
       if (client.readyState === WebSocket.OPEN) {

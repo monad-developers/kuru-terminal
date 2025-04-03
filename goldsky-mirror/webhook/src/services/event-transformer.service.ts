@@ -169,7 +169,7 @@ export function decodeEventData(log: RawLog) {
 }
 
 // Helper function to filter and group events by type
-export function processKuruEventsFromLogs(logs: RawLog[]): KuruEvents {
+export function getKuruEventsFromLogs(logs: RawLog[]): KuruEvents {
   const kuruEvents: KuruEvents = {
     trade: [],
     orderCreated: [],

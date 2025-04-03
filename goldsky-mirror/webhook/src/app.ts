@@ -11,9 +11,9 @@ import {
   ownershipHandoverRequested,
   ownershipTransferred,
   upgraded,
-} from "./db/goldsky-schema";
+} from "./db/schema";
 import { RawLog } from "./types";
-import { processKuruEventsFromLogs } from "./services/event-processor.service";
+import { getKuruEventsFromLogs } from "./services/event-transformer.service";
 import { EventWsStream } from "./services/event-ws-stream.service";
 
 // WebSocket Stream Manager
@@ -86,7 +86,7 @@ expressApp.post("/", async (req, res) => {
     const logs = req.body as RawLog[];
     console.log(`[${new Date().toISOString()}] Received ${logs.length} logs`);
 
-    const events = processKuruEventsFromLogs(logs);
+    const events = getKuruEventsFromLogs(logs);
     console.log(`[${new Date().toISOString()}] Processing ${events.trade.length} trades, ${events.orderCreated.length} order creations, ${events.ordersCanceled.length} order cancellations, ${events.initialized.length} initializations, ${events.ownershipHandoverCanceled.length} ownership handover cancellations, ${events.ownershipHandoverRequested.length} ownership handover requests, ${events.ownershipTransferred.length} ownership transfers, ${events.upgraded.length} upgrades`);
 
     // Broadcast events to connected WebSocket clients

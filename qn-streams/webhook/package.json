@@ -17,11 +17,13 @@
     "drizzle-orm": "^0.40.0",
     "ethers": "^6.13.5",
     "express": "~4.16.1",
-    "node-fetch": "^3.3.2"
+    "node-fetch": "^3.3.2",
+    "ws": "^8.18.1"
   },
   "devDependencies": {
     "@types/body-parser": "^1.19.5",
     "@types/express": "^5.0.0",
+    "@types/ws": "^8.18.1",
     "drizzle-kit": "^0.30.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.2"

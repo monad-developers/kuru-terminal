@@ -3,7 +3,7 @@ import type { Config } from 'drizzle-kit';
 config({ path: '.env' });
 
 export default {
-  schema: "./src/db/goldsky-schema.ts",
+  schema: "./src/db/schema.ts",
   out: "./src/db/migrations",
   dialect: "postgresql",
   dbCredentials: {

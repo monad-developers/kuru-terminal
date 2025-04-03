@@ -28,7 +28,7 @@ const app = express();
 
 // Start the indexer when the app starts
 const POLLING_INTERVAL = process.env.POLLING_INTERVAL ? parseInt(process.env.POLLING_INTERVAL) : 5000;
-const indexerTask = startIndexer(POLLING_INTERVAL);
+startIndexer(POLLING_INTERVAL);
 
 // Middleware
 app.use(bodyParser.json({ limit: "10mb" }));

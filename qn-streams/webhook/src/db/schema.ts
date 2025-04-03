@@ -1,9 +1,13 @@
-import { pgSchema } from "drizzle-orm/pg-core";
+import { pgTable } from "drizzle-orm/pg-core";
 
-export const quicknodeSchema = pgSchema("quicknode");
-
-export const trade = quicknodeSchema.table("trade", (t) => ({
+export const trade = pgTable("trade", (t) => ({
   id: t.integer("id").primaryKey().generatedAlwaysAsIdentity(),
+  transactionHash: t.text("transaction_hash"),
+  blockHeight: t.numeric("block_height", {
+    precision: 78,
+    scale: 0,
+  }),
+  orderBookAddress: t.text("order_book_address"),
   orderId: t.numeric("order_id", {
     precision: 78,
     scale: 0,
@@ -24,9 +28,4 @@ export const trade = quicknodeSchema.table("trade", (t) => ({
     precision: 78,
     scale: 0,
   }),
-  blockHeight: t.numeric("block_height", {
-    precision: 78,
-    scale: 0,
-  }),
-  orderBookAddress: t.text("order_book_address"),
 }));
