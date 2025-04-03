@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
-import { KuruEvents, RawLog } from "./types";
-import kuruOrderBookABI from "./abis/KuruOrderBook.json";
+import { KuruEvents, RawLog } from "../types";
+import kuruOrderBookABI from "../abis/KuruOrderBook.json";
 import {
   TradeEvent,
   OrderCreatedEvent,
@@ -10,11 +10,10 @@ import {
   OwnershipHandoverRequestedEvent,
   OwnershipTransferredEvent,
   UpgradedEvent,
-} from "./db/types";
+} from "../db/types";
 
 // Create contract interface for event parsing
 const contractInterface = new ethers.Interface(kuruOrderBookABI);
-
 // Get event topic hashes
 export const eventTopics = {
   trade: contractInterface.getEvent("Trade")?.topicHash.toLowerCase(),

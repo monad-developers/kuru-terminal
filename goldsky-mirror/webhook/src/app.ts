@@ -13,24 +13,94 @@ import {
   upgraded,
 } from "./db/goldsky-schema";
 import { RawLog } from "./types";
-import { processKuruEventsFromLogs } from "./utils";
+import { processKuruEventsFromLogs } from "./services/event-processor.service";
+import { EventWsStream } from "./services/event-ws-stream.service";
 
-const app = express();
+// WebSocket Stream Manager
 
-app.use(bodyParser.json({ limit: "10mb" }));
-app.use(bodyParser.urlencoded({ extended: true, limit: "10mb" }));
+/**
+ * Manager for WebSocket event streaming service
+ * Implemented as a singleton to ensure the same instance is used throughout the application
+ */
+class EventWsStreamManager {
+  private static instance: EventWsStreamManager;
+  private eventWsStream: EventWsStream | null = null;
 
-app.get("/", async (req, res) => {
+  private constructor() { }
+
+  /**
+   * Get the singleton instance of the event WebSocket manager
+   */
+  public static getInstance(): EventWsStreamManager {
+    if (!EventWsStreamManager.instance) {
+      EventWsStreamManager.instance = new EventWsStreamManager();
+    }
+    return EventWsStreamManager.instance;
+  }
+
+  /**
+   * Initialize the WebSocket streaming service
+   */
+  public initializeWsStream(port: number): void {
+    if (!this.eventWsStream) {
+      this.eventWsStream = new EventWsStream(port);
+    }
+  }
+
+  /**
+   * Get the WebSocket streaming service instance
+   */
+  public getWsStream(): EventWsStream {
+    if (!this.eventWsStream) {
+      throw new Error('WebSocket streaming service not initialized');
+    }
+    return this.eventWsStream;
+  }
+
+  /**
+   * Shutdown WebSocket streaming service
+   */
+  public shutdownWsStream(): void {
+    if (this.eventWsStream) {
+      this.eventWsStream.shutdown();
+    }
+  }
+}
+
+// Export singleton instance for use in both app and server
+export const eventWsManager = EventWsStreamManager.getInstance();
+
+// Express Application
+
+export const expressApp = express();
+
+expressApp.use(bodyParser.json({ limit: "10mb" }));
+expressApp.use(bodyParser.urlencoded({ extended: true, limit: "10mb" }));
+
+expressApp.get("/", async (req, res) => {
   res.status(200).send("Kuru Indexer Goldsky Mirror Webhook");
 });
 
-app.post("/", async (req, res) => {
+expressApp.post("/", async (req, res) => {
   try {
     const logs = req.body as RawLog[];
     console.log(`[${new Date().toISOString()}] Received ${logs.length} logs`);
 
     const events = processKuruEventsFromLogs(logs);
     console.log(`[${new Date().toISOString()}] Processing ${events.trade.length} trades, ${events.orderCreated.length} order creations, ${events.ordersCanceled.length} order cancellations, ${events.initialized.length} initializations, ${events.ownershipHandoverCanceled.length} ownership handover cancellations, ${events.ownershipHandoverRequested.length} ownership handover requests, ${events.ownershipTransferred.length} ownership transfers, ${events.upgraded.length} upgrades`);
+
+    // Broadcast events to connected WebSocket clients
+    try {
+      const eventWsStream = eventWsManager.getWsStream();
+      eventWsStream.broadcastEvents(events);
+      const clientCount = eventWsStream.getConnectedClientCount();
+      if (clientCount > 0) {
+        console.log(`[${new Date().toISOString()}] Events broadcast to ${clientCount} connected clients`);
+      }
+    } catch (error) {
+      console.error(`[${new Date().toISOString()}] Error broadcasting events:`, error);
+      // Continue processing even if broadcasting fails
+    }
 
     // Use a transaction for all table upserts
     await db.transaction(async (tx) => {
@@ -177,5 +247,3 @@ app.post("/", async (req, res) => {
     });
   }
 });
-
-export default app;
