@@ -5,7 +5,7 @@ import PonderTrades from "@/src/components/PonderTrades";
 import TheGraphSubgraphTrades from "@/src/components/TheGraphSubgraphTrades";
 import GoldskySubgraphTrades from "@/src/components/GoldskySubgraphTrades";
 import AlchemySubgraphTrades from "./AlchemySubgraphTrades";
-import AlliumWSTrades from "./AlliumWSTrades";
+import AlliumDataStreamTrades from "./AlliumDataStreamTrades";
 import { Button } from "@/src/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card";
 import { Slider } from "@/src/components/ui/slider";
@@ -17,9 +17,13 @@ import {
   GOLDSKY_SUBGRAPH_URL,
   ALCHEMY_SUBGRAPH_URL,
   ALLIUM_WS_URL,
+  GOLDSKY_MIRROR_WS_URL,
+  QUICKNODE_STREAM_WS_URL,
 } from "@/src/config/env.config";
 import { Tab } from "@/src/enums/tab.enum";
 import { useApp } from "@/src/providers/AppProvider";
+import GoldskyMirrorTrades from "./GoldskyMirrorTrades";
+import QuicknodeStreamTrades from "./QuicknodeStreamTrades";
 
 const TradeComparison = () => {
   const {
@@ -104,10 +108,10 @@ const TradeComparison = () => {
             <div className="flex justify-between items-center mb-4">
               <TabsList>
                 <TabsTrigger value={Tab.PONDER}>
-                  Ponder Subgraph
+                  Ponder
                 </TabsTrigger>
                 <TabsTrigger value={Tab.ENVIO_HYPERINDEX}>
-                  Envio Subgraph
+                  Envio
                 </TabsTrigger>
                 <TabsTrigger value={Tab.THEGRAPH_SUBGRAPH}>
                   The Graph Subgraph
@@ -118,8 +122,14 @@ const TradeComparison = () => {
                 <TabsTrigger value={Tab.ALCHEMY_SUBGRAPH}>
                   Alchemy Subgraph
                 </TabsTrigger>
-                <TabsTrigger value={Tab.ALLIUM_WS}>
-                  Allium WebSocket
+                <TabsTrigger value={Tab.ALLIUM_DATA_STREAM}>
+                  Allium Data Stream
+                </TabsTrigger>
+                <TabsTrigger value={Tab.GOLDSKY_MIRROR}>
+                  Goldsky Mirror
+                </TabsTrigger>
+                <TabsTrigger value={Tab.QUICKNODE_STREAM}>
+                  Quicknode Stream
                 </TabsTrigger>
               </TabsList>
             </div>
@@ -215,7 +225,7 @@ const TradeComparison = () => {
               />
             </TabsContent>
 
-            <TabsContent value={Tab.ALLIUM_WS}>
+            <TabsContent value={Tab.ALLIUM_DATA_STREAM}>
               <div className="mb-4 p-4 bg-muted/40 rounded-md">
                 <h3 className="font-medium mb-1">Allium WebSocket</h3>
                 <p className="text-sm text-muted-foreground">
@@ -225,7 +235,33 @@ const TradeComparison = () => {
                   which is monitoring blockchain events.
                 </p>
               </div>
-              <AlliumWSTrades />
+              <AlliumDataStreamTrades />
+            </TabsContent>
+
+            <TabsContent value={Tab.GOLDSKY_MIRROR}>
+              <div className="mb-4 p-4 bg-muted/40 rounded-md">
+                <h3 className="font-medium mb-1">Goldsky Mirror</h3>
+                <p className="text-sm text-muted-foreground">
+                  This tab fetches trade data using Goldsky's Mirror API hosted on{" "}
+                  <a href={GOLDSKY_MIRROR_WS_URL} className="underline">
+                    {GOLDSKY_MIRROR_WS_URL}
+                  </a>
+                </p>
+              </div>
+              <GoldskyMirrorTrades />
+            </TabsContent>
+
+            <TabsContent value={Tab.QUICKNODE_STREAM}>
+              <div className="mb-4 p-4 bg-muted/40 rounded-md">
+                <h3 className="font-medium mb-1">Quicknode Stream</h3>
+                <p className="text-sm text-muted-foreground">
+                  This tab fetches trade data using Quicknode's Stream API hosted on{" "}
+                  <a href={QUICKNODE_STREAM_WS_URL} className="underline">
+                    {QUICKNODE_STREAM_WS_URL}
+                  </a>
+                </p>
+              </div>
+              <QuicknodeStreamTrades />
             </TabsContent>
           </Tabs>
         </CardContent>

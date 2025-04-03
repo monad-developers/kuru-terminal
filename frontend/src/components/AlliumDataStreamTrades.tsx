@@ -4,7 +4,7 @@ import React from 'react';
 import TradeTable from "@/src/components/TradeTable";
 import { useTrades } from '@/src/providers/AppProvider';
 
-const AlliumWSTrades = () => {
+const AlliumDataStreamTrades = () => {
   const { alliumTrades, alliumConnected, alliumError, alliumLoading } = useTrades();
 
   if (!alliumConnected) {
@@ -29,4 +29,4 @@ const AlliumWSTrades = () => {
   );
 };
 
-export default AlliumWSTrades; 
+export default AlliumDataStreamTrades; 

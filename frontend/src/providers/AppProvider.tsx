@@ -2,8 +2,10 @@
 
 import React, { createContext, useContext, useState, useCallback } from 'react';
 import { Tab } from '@/src/enums/tab.enum';
-import { useAlliumTrades } from '@/src/hooks/useAlliumTrades';
+import { useAlliumDataStreamTrades } from '@/src/hooks/useAlliumDataStreamTrades';
 import type { Trade } from '@/src/types/trade.interface';
+import { useGoldskyMirrorTrades } from '../hooks/useGoldskyMirrorTrades';
+import { useQuicknodeStreamTrades } from '../hooks/useQuicknodeStreamTrades';
 
 // Define the context type with app state and actions
 interface AppContextType {
@@ -28,6 +30,14 @@ interface AppContextType {
   alliumConnected: boolean;
   alliumError: string | null;
   alliumLoading: boolean;
+  goldskyMirrorTrades: Trade[];
+  goldskyMirrorConnected: boolean;
+  goldskyMirrorError: string | null;
+  goldskyMirrorLoading: boolean;
+  quicknodeStreamTrades: Trade[];
+  quicknodeStreamConnected: boolean;
+  quicknodeStreamError: string | null;
+  quicknodeStreamLoading: boolean;
   // Additional sources will be added here as they are implemented
 }
 
@@ -54,7 +64,16 @@ const AppContext = createContext<AppContextType>({
   alliumConnected: false,
   alliumError: null,
   alliumLoading: false,
-  
+
+  goldskyMirrorTrades: [],
+  goldskyMirrorConnected: false,
+  goldskyMirrorError: null,
+  goldskyMirrorLoading: false,
+
+  quicknodeStreamTrades: [],
+  quicknodeStreamConnected: false,
+  quicknodeStreamError: null,
+  quicknodeStreamLoading: false,
   // Additional sources will be added here as they are implemented
 });
 
@@ -67,14 +86,32 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
   const [limit, setLimit] = useState<number>(20);
   const [refetchInterval, setRefetchInterval] = useState<number>(1000); // ms
 
-  // Allium WebSocket state
+  // Allium trades state
   const { 
     trades: alliumTrades, 
     connected: alliumConnected, 
     error: alliumError, 
     loading: alliumLoading,
     clearTrades: clearAlliumTrades 
-  } = useAlliumTrades(enabled, limit);
+  } = useAlliumDataStreamTrades(enabled, limit);
+
+  // Goldsky Mirror trades state
+  const { 
+    trades: goldskyMirrorTrades, 
+    connected: goldskyMirrorConnected, 
+    error: goldskyMirrorError, 
+    loading: goldskyMirrorLoading,
+    clearTrades: clearGoldskyMirrorTrades
+  } = useGoldskyMirrorTrades(enabled, limit);
+
+  // Quicknode Stream trades state
+  const { 
+    trades: quicknodeStreamTrades, 
+    connected: quicknodeStreamConnected, 
+    error: quicknodeStreamError, 
+    loading: quicknodeStreamLoading,
+    clearTrades: clearQuicknodeStreamTrades
+  } = useQuicknodeStreamTrades(enabled, limit);
 
   // Helper function to determine if a source is active
   const isSourceActive = useCallback((source: Tab): boolean => {
@@ -83,11 +120,17 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
   
   // Clear data for specified source or all sources if none specified
   const clearData = useCallback((source?: Tab) => {
-    if (!source || source === Tab.ALLIUM_WS) {
+    if (!source || source === Tab.ALLIUM_DATA_STREAM) {
       clearAlliumTrades();
     }
+    if (!source || source === Tab.GOLDSKY_MIRROR) {
+      clearGoldskyMirrorTrades();
+    }
+    if (!source || source === Tab.QUICKNODE_STREAM) {
+      clearQuicknodeStreamTrades();
+    }
     // Add more clear functions for other sources as they are implemented
-  }, [clearAlliumTrades]);
+  }, [clearAlliumTrades, clearGoldskyMirrorTrades, clearQuicknodeStreamTrades]);
 
   return (
     <AppContext.Provider 
@@ -113,7 +156,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
         alliumConnected,
         alliumError,
         alliumLoading,
-        
+
+        goldskyMirrorTrades,
+        goldskyMirrorConnected,
+        goldskyMirrorError,
+        goldskyMirrorLoading,
+
+        quicknodeStreamTrades,
+        quicknodeStreamConnected,
+        quicknodeStreamError,
+        quicknodeStreamLoading,
         // Additional sources will be added here as they are implemented
       }}
     >
@@ -129,12 +181,20 @@ export const useApp = () => useContext(AppContext);
 export const useTrades = () => {
   const context = useContext(AppContext);
   return {
-    // Allium trades
     alliumTrades: context.alliumTrades,
     alliumConnected: context.alliumConnected, 
     alliumError: context.alliumError,
     alliumLoading: context.alliumLoading,
-    
+
+    goldskyMirrorTrades: context.goldskyMirrorTrades,
+    goldskyMirrorConnected: context.goldskyMirrorConnected,
+    goldskyMirrorError: context.goldskyMirrorError,
+    goldskyMirrorLoading: context.goldskyMirrorLoading,
+
+    quicknodeStreamTrades: context.quicknodeStreamTrades,
+    quicknodeStreamConnected: context.quicknodeStreamConnected,
+    quicknodeStreamError: context.quicknodeStreamError,
+    quicknodeStreamLoading: context.quicknodeStreamLoading,
     // Add more data sources here as they are implemented
   };
 };
