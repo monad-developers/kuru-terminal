@@ -6,6 +6,7 @@ import { useAlliumDataStreamTrades } from '@/src/hooks/useAlliumDataStreamTrades
 import type { Trade } from '@/src/types/trade.interface';
 import { useGoldskyMirrorTrades } from '../hooks/useGoldskyMirrorTrades';
 import { useQuicknodeStreamTrades } from '../hooks/useQuicknodeStreamTrades';
+import { useThirdwebInsightTrades } from '../hooks/useThirdwebInsightTrades';
 
 // Define the context type with app state and actions
 interface AppContextType {
@@ -30,14 +31,20 @@ interface AppContextType {
   alliumConnected: boolean;
   alliumError: string | null;
   alliumLoading: boolean;
+
   goldskyMirrorTrades: Trade[];
   goldskyMirrorConnected: boolean;
   goldskyMirrorError: string | null;
   goldskyMirrorLoading: boolean;
+  
   quicknodeStreamTrades: Trade[];
   quicknodeStreamConnected: boolean;
   quicknodeStreamError: string | null;
   quicknodeStreamLoading: boolean;
+  
+  thirdwebInsightTrades: Trade[];
+  thirdwebInsightLoading: boolean;
+  thirdwebInsightError: string | null;
   // Additional sources will be added here as they are implemented
 }
 
@@ -74,6 +81,10 @@ const AppContext = createContext<AppContextType>({
   quicknodeStreamConnected: false,
   quicknodeStreamError: null,
   quicknodeStreamLoading: false,
+
+  thirdwebInsightTrades: [],
+  thirdwebInsightLoading: false,
+  thirdwebInsightError: null,
   // Additional sources will be added here as they are implemented
 });
 
@@ -112,6 +123,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     loading: quicknodeStreamLoading,
     clearTrades: clearQuicknodeStreamTrades
   } = useQuicknodeStreamTrades(enabled, limit);
+
+  // Thirdweb Insight trades state
+  const { 
+    trades: thirdwebInsightTrades, 
+    loading: thirdwebInsightLoading, 
+    error: thirdwebInsightError 
+  } = useThirdwebInsightTrades(enabled, limit, refetchInterval);
 
   // Helper function to determine if a source is active
   const isSourceActive = useCallback((source: Tab): boolean => {
@@ -166,6 +184,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
         quicknodeStreamConnected,
         quicknodeStreamError,
         quicknodeStreamLoading,
+
+        thirdwebInsightTrades,
+        thirdwebInsightLoading,
+        thirdwebInsightError,
         // Additional sources will be added here as they are implemented
       }}
     >
@@ -195,6 +217,10 @@ export const useTrades = () => {
     quicknodeStreamConnected: context.quicknodeStreamConnected,
     quicknodeStreamError: context.quicknodeStreamError,
     quicknodeStreamLoading: context.quicknodeStreamLoading,
+
+    thirdwebInsightTrades: context.thirdwebInsightTrades,
+    thirdwebInsightLoading: context.thirdwebInsightLoading,
+    thirdwebInsightError: context.thirdwebInsightError,
     // Add more data sources here as they are implemented
   };
 };

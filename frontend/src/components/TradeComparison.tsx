@@ -19,11 +19,13 @@ import {
   ALLIUM_WS_URL,
   GOLDSKY_MIRROR_WS_URL,
   QUICKNODE_STREAM_WS_URL,
+  THIRDWEB_INSIGHT_API_URL,
 } from "@/src/config/env.config";
 import { Tab } from "@/src/enums/tab.enum";
 import { useApp } from "@/src/providers/AppProvider";
 import GoldskyMirrorTrades from "./GoldskyMirrorTrades";
 import QuicknodeStreamTrades from "./QuicknodeStreamTrades";
+import ThirdwebInsightTrades from "./ThirdwebInsightTrades";
 
 const TradeComparison = () => {
   const {
@@ -113,6 +115,9 @@ const TradeComparison = () => {
                 <TabsTrigger value={Tab.ENVIO_HYPERINDEX}>
                   Envio
                 </TabsTrigger>
+                <TabsTrigger value={Tab.THIRDWEB_INSIGHT}>
+                  Thirdweb Insight
+                </TabsTrigger>
                 <TabsTrigger value={Tab.THEGRAPH_SUBGRAPH}>
                   The Graph Subgraph
                 </TabsTrigger>
@@ -170,6 +175,19 @@ const TradeComparison = () => {
                 refetchInterval={refetchInterval}
                 enabled={isSourceActive(Tab.ENVIO_HYPERINDEX)}
               />
+            </TabsContent>
+
+            <TabsContent value={Tab.THIRDWEB_INSIGHT}>
+              <div className="mb-4 p-4 bg-muted/40 rounded-md">
+                <h3 className="font-medium mb-1">Thirdweb Insight</h3>
+                <p className="text-sm  text-muted-foreground">
+                  This tab fetches trade data using Thirdweb Insight's API hosted on{" "}
+                  <a href={THIRDWEB_INSIGHT_API_URL} className="underline">
+                    {THIRDWEB_INSIGHT_API_URL}
+                  </a>
+                </p>
+              </div>
+              <ThirdwebInsightTrades />
             </TabsContent>
 
             <TabsContent value={Tab.THEGRAPH_SUBGRAPH}>

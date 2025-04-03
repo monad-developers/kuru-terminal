@@ -19,6 +19,7 @@ import { EventQueryParams, KuruEvents } from "./types";
 import { isValidEventType, isValidSortOrder } from "./utils/indexer.util";
 import { createLogger } from "./utils/logger.util";
 import { MONAD_TESTNET_CHAIN_ID } from "./constants";
+import cors from "cors";
 
 // Create logger for this module
 const logger = createLogger('API');
@@ -33,6 +34,7 @@ startIndexer(POLLING_INTERVAL);
 // Middleware
 app.use(bodyParser.json({ limit: "10mb" }));
 app.use(bodyParser.urlencoded({ extended: true, limit: "10mb" }));
+app.use(cors());
 
 // Create router
 const router = express.Router();

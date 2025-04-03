@@ -7,4 +7,5 @@ export enum Tab {
     ALLIUM_DATA_STREAM = "allium-data-stream",
     GOLDSKY_MIRROR = "goldsky-mirror",
     QUICKNODE_STREAM = "quicknode-stream",
+    THIRDWEB_INSIGHT = "thirdweb-insight",
 }
