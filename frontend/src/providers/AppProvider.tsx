@@ -7,6 +7,11 @@ import type { Trade } from '@/src/types/trade.interface';
 import { useGoldskyMirrorTrades } from '../hooks/useGoldskyMirrorTrades';
 import { useQuicknodeStreamTrades } from '../hooks/useQuicknodeStreamTrades';
 import { useThirdwebInsightTrades } from '../hooks/useThirdwebInsightTrades';
+import { useAlchemySubgraphTrades } from '../hooks/useAlchemySubgraphTrades';
+import { useGoldskySubgraphTrades } from '../hooks/useGoldskySubgraphTrades';
+import { useTheGraphSubgraphTrades } from '../hooks/useTheGraphSubgraphTrades';
+import { useEnvioHyperIndexTrades } from '../hooks/useEnvioHyperIndexTrades';
+import { usePonderTrades } from '../hooks/usePonderTrades';
 
 // Define the context type with app state and actions
 interface AppContextType {
@@ -45,6 +50,26 @@ interface AppContextType {
   thirdwebInsightTrades: Trade[];
   thirdwebInsightLoading: boolean;
   thirdwebInsightError: string | null;
+
+  alchemySubgraphTrades: Trade[];
+  alchemySubgraphLoading: boolean;
+  alchemySubgraphError: string | null;
+
+  goldskySubgraphTrades: Trade[];
+  goldskySubgraphLoading: boolean;
+  goldskySubgraphError: string | null;
+
+  theGraphSubgraphTrades: Trade[];
+  theGraphSubgraphLoading: boolean;
+  theGraphSubgraphError: string | null;
+
+  envioHyperIndexTrades: Trade[];
+  envioHyperIndexLoading: boolean;
+  envioHyperIndexError: string | null;
+
+  ponderTrades: Trade[];
+  ponderLoading: boolean;
+  ponderError: string | null;
   // Additional sources will be added here as they are implemented
 }
 
@@ -85,6 +110,26 @@ const AppContext = createContext<AppContextType>({
   thirdwebInsightTrades: [],
   thirdwebInsightLoading: false,
   thirdwebInsightError: null,
+
+  alchemySubgraphTrades: [],
+  alchemySubgraphLoading: false,
+  alchemySubgraphError: null,
+
+  goldskySubgraphTrades: [],
+  goldskySubgraphLoading: false,
+  goldskySubgraphError: null,
+
+  theGraphSubgraphTrades: [],
+  theGraphSubgraphLoading: false,
+  theGraphSubgraphError: null,
+
+  envioHyperIndexTrades: [],
+  envioHyperIndexLoading: false,
+  envioHyperIndexError: null,
+
+  ponderTrades: [],
+  ponderLoading: false,
+  ponderError: null,
   // Additional sources will be added here as they are implemented
 });
 
@@ -130,6 +175,41 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     loading: thirdwebInsightLoading, 
     error: thirdwebInsightError 
   } = useThirdwebInsightTrades(enabled, limit, refetchInterval);
+
+  // Alchemy Subgraph trades state
+  const {
+    trades: alchemySubgraphTrades,
+    loading: alchemySubgraphLoading,
+    error: alchemySubgraphError
+  } = useAlchemySubgraphTrades(enabled, limit, refetchInterval);
+
+  // Goldsky Subgraph trades state
+  const {
+    trades: goldskySubgraphTrades,
+    loading: goldskySubgraphLoading,
+    error: goldskySubgraphError
+  } = useGoldskySubgraphTrades(enabled, limit, refetchInterval);
+
+  // TheGraph Subgraph trades state
+  const {
+    trades: theGraphSubgraphTrades,
+    loading: theGraphSubgraphLoading,
+    error: theGraphSubgraphError
+  } = useTheGraphSubgraphTrades(enabled, limit, refetchInterval);
+
+  // Envio HyperIndex trades state
+  const {
+    trades: envioHyperIndexTrades,
+    loading: envioHyperIndexLoading,
+    error: envioHyperIndexError
+  } = useEnvioHyperIndexTrades(enabled, limit, refetchInterval);
+
+  // Ponder trades state
+  const {
+    trades: ponderTrades,
+    loading: ponderLoading,
+    error: ponderError
+  } = usePonderTrades(enabled, limit, refetchInterval);
 
   // Helper function to determine if a source is active
   const isSourceActive = useCallback((source: Tab): boolean => {
@@ -188,6 +268,26 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
         thirdwebInsightTrades,
         thirdwebInsightLoading,
         thirdwebInsightError,
+
+        alchemySubgraphTrades,
+        alchemySubgraphLoading,
+        alchemySubgraphError,
+
+        goldskySubgraphTrades,
+        goldskySubgraphLoading,
+        goldskySubgraphError,
+
+        theGraphSubgraphTrades,
+        theGraphSubgraphLoading,
+        theGraphSubgraphError,
+
+        envioHyperIndexTrades,
+        envioHyperIndexLoading,
+        envioHyperIndexError,
+
+        ponderTrades,
+        ponderLoading,
+        ponderError,
         // Additional sources will be added here as they are implemented
       }}
     >
@@ -221,6 +321,26 @@ export const useTrades = () => {
     thirdwebInsightTrades: context.thirdwebInsightTrades,
     thirdwebInsightLoading: context.thirdwebInsightLoading,
     thirdwebInsightError: context.thirdwebInsightError,
+
+    alchemySubgraphTrades: context.alchemySubgraphTrades,
+    alchemySubgraphLoading: context.alchemySubgraphLoading,
+    alchemySubgraphError: context.alchemySubgraphError,
+
+    goldskySubgraphTrades: context.goldskySubgraphTrades,
+    goldskySubgraphLoading: context.goldskySubgraphLoading,
+    goldskySubgraphError: context.goldskySubgraphError,
+
+    theGraphSubgraphTrades: context.theGraphSubgraphTrades,
+    theGraphSubgraphLoading: context.theGraphSubgraphLoading,
+    theGraphSubgraphError: context.theGraphSubgraphError,
+
+    envioHyperIndexTrades: context.envioHyperIndexTrades,
+    envioHyperIndexLoading: context.envioHyperIndexLoading,
+    envioHyperIndexError: context.envioHyperIndexError,
+
+    ponderTrades: context.ponderTrades,
+    ponderLoading: context.ponderLoading,
+    ponderError: context.ponderError,
     // Add more data sources here as they are implemented
   };
 };

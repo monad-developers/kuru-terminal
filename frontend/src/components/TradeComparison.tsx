@@ -36,8 +36,7 @@ const TradeComparison = () => {
     enabled,
     setEnabled,
     limit,
-    setLimit,
-    isSourceActive
+    setLimit
   } = useApp();
 
   const handleTabChange = (value: string) => {
@@ -116,7 +115,7 @@ const TradeComparison = () => {
                   Envio
                 </TabsTrigger>
                 <TabsTrigger value={Tab.THIRDWEB_INSIGHT}>
-                  Thirdweb Insight
+                  thirdweb Insight
                 </TabsTrigger>
                 <TabsTrigger value={Tab.THEGRAPH_SUBGRAPH}>
                   The Graph Subgraph
@@ -141,7 +140,7 @@ const TradeComparison = () => {
 
             <TabsContent value={Tab.PONDER}>
               <div className="mb-4 p-4 bg-muted/40 rounded-md">
-                <h3 className="font-medium mb-1">Ponder Subgraph</h3>
+                <h3 className="font-medium mb-1">Ponder</h3>
                 <p className="text-sm text-muted-foreground">
                   This tab fetches trade data using ponder's GraphQL API hosted on{" "}
                   <a href={PONDER_GRAPHQL_API_URL} className="underline">
@@ -151,16 +150,12 @@ const TradeComparison = () => {
                   information on how to run the indexer.
                 </p>
               </div>
-              <PonderTrades
-                limit={limit}
-                refetchInterval={refetchInterval}
-                enabled={isSourceActive(Tab.PONDER)}
-              />
+              <PonderTrades />
             </TabsContent>
 
             <TabsContent value={Tab.ENVIO_HYPERINDEX}>
               <div className="mb-4 p-4 bg-muted/40 rounded-md">
-                <h3 className="font-medium mb-1">Envio Subgraph</h3>
+                <h3 className="font-medium mb-1">Envio</h3>
                 <p className="text-sm text-muted-foreground">
                   This tab fetches trade data using Envio's GraphQL API hosted on{" "}
                   <a href={ENVIO_HYPERINDEX_API_URL} className="underline">
@@ -170,18 +165,14 @@ const TradeComparison = () => {
                   on how to run the indexer.
                 </p>
               </div>
-              <EnvioHyperIndexTrades
-                limit={limit}
-                refetchInterval={refetchInterval}
-                enabled={isSourceActive(Tab.ENVIO_HYPERINDEX)}
-              />
+              <EnvioHyperIndexTrades />
             </TabsContent>
 
             <TabsContent value={Tab.THIRDWEB_INSIGHT}>
               <div className="mb-4 p-4 bg-muted/40 rounded-md">
-                <h3 className="font-medium mb-1">Thirdweb Insight</h3>
+                <h3 className="font-medium mb-1">thirdweb Insight</h3>
                 <p className="text-sm  text-muted-foreground">
-                  This tab fetches trade data using Thirdweb Insight's API hosted on{" "}
+                  This tab fetches trade data using thirdweb Insight's API hosted on{" "}
                   <a href={THIRDWEB_INSIGHT_API_URL} className="underline">
                     {THIRDWEB_INSIGHT_API_URL}
                   </a>
@@ -202,11 +193,7 @@ const TradeComparison = () => {
                   information on how to run the indexer.
                 </p>
               </div>
-              <TheGraphSubgraphTrades
-                limit={limit}
-                refetchInterval={refetchInterval}
-                enabled={isSourceActive(Tab.THEGRAPH_SUBGRAPH)}
-              />
+              <TheGraphSubgraphTrades />
             </TabsContent>
 
             <TabsContent value={Tab.GOLDSKY_SUBGRAPH}>
@@ -221,11 +208,7 @@ const TradeComparison = () => {
                   information on how to run the indexer.
                 </p>
               </div>
-              <GoldskySubgraphTrades
-                limit={limit}
-                refetchInterval={refetchInterval}
-                enabled={isSourceActive(Tab.GOLDSKY_SUBGRAPH)}
-              />
+              <GoldskySubgraphTrades />
             </TabsContent>
 
             <TabsContent value={Tab.ALCHEMY_SUBGRAPH}>
@@ -236,18 +219,14 @@ const TradeComparison = () => {
                   {ALCHEMY_SUBGRAPH_URL}
                 </p>
               </div>
-              <AlchemySubgraphTrades
-                limit={limit}
-                refetchInterval={refetchInterval}
-                enabled={isSourceActive(Tab.ALCHEMY_SUBGRAPH)}
-              />
+              <AlchemySubgraphTrades />
             </TabsContent>
 
             <TabsContent value={Tab.ALLIUM_DATA_STREAM}>
               <div className="mb-4 p-4 bg-muted/40 rounded-md">
-                <h3 className="font-medium mb-1">Allium WebSocket</h3>
+                <h3 className="font-medium mb-1">Allium Data Stream</h3>
                 <p className="text-sm text-muted-foreground">
-                  This tab displays real-time trade data using Allium's WebSocket API at{" "}
+                  This tab displays real-time trade data from Allium's Data Stream via a WebSocket connection at{" "}
                   <span className="font-mono text-xs">{ALLIUM_WS_URL}</span>.
                   The data is streamed in real-time from the Kafka consumer
                   which is monitoring blockchain events.
@@ -260,10 +239,8 @@ const TradeComparison = () => {
               <div className="mb-4 p-4 bg-muted/40 rounded-md">
                 <h3 className="font-medium mb-1">Goldsky Mirror</h3>
                 <p className="text-sm text-muted-foreground">
-                  This tab fetches trade data using Goldsky's Mirror API hosted on{" "}
-                  <a href={GOLDSKY_MIRROR_WS_URL} className="underline">
-                    {GOLDSKY_MIRROR_WS_URL}
-                  </a>
+                  This tab fetches trade data from Goldsky's Mirror pipeline via a WebSocket connection at{" "}
+                  <span className="font-mono text-xs">{GOLDSKY_MIRROR_WS_URL}</span>.
                 </p>
               </div>
               <GoldskyMirrorTrades />
@@ -273,10 +250,8 @@ const TradeComparison = () => {
               <div className="mb-4 p-4 bg-muted/40 rounded-md">
                 <h3 className="font-medium mb-1">Quicknode Stream</h3>
                 <p className="text-sm text-muted-foreground">
-                  This tab fetches trade data using Quicknode's Stream API hosted on{" "}
-                  <a href={QUICKNODE_STREAM_WS_URL} className="underline">
-                    {QUICKNODE_STREAM_WS_URL}
-                  </a>
+                  This tab fetches trade data from Quicknode's Stream pipeline via a WebSocket connection at{" "}
+                  <span className="font-mono text-xs">{QUICKNODE_STREAM_WS_URL}</span>.
                 </p>
               </div>
               <QuicknodeStreamTrades />
