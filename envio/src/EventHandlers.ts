@@ -16,12 +16,14 @@ import {
 KuruOrderBook.OrderCreated.handler(async ({ event, context }) => {
   const entity: KuruOrderBook_OrderCreated = {
     id: `${event.chainId}_${event.block.number}_${event.logIndex}`,
+    blockHeight: event.block.number,
+    transactionHash: event.transaction.hash,
+    orderBookAddress: event.srcAddress,
     orderId: event.params.orderId,
     owner: event.params.owner,
     size: event.params.size,
     price: event.params.price,
     isBuy: event.params.isBuy,
-    orderBookAddress: event.srcAddress,
   };
 
   context.KuruOrderBook_OrderCreated.set(entity);
@@ -30,9 +32,11 @@ KuruOrderBook.OrderCreated.handler(async ({ event, context }) => {
 KuruOrderBook.OrdersCanceled.handler(async ({ event, context }) => {
   const entity: KuruOrderBook_OrdersCanceled = {
     id: `${event.chainId}_${event.block.number}_${event.logIndex}`,
+    blockHeight: event.block.number,
+    transactionHash: event.transaction.hash,
+    orderBookAddress: event.srcAddress,
     orderId: event.params.orderId,
     owner: event.params.owner,
-    orderBookAddress: event.srcAddress,
   };
 
   context.KuruOrderBook_OrdersCanceled.set(entity);
@@ -41,6 +45,9 @@ KuruOrderBook.OrdersCanceled.handler(async ({ event, context }) => {
 KuruOrderBook.Trade.handler(async ({ event, context }) => {
   const entity: KuruOrderBook_Trade = {
     id: `${event.chainId}_${event.block.number}_${event.logIndex}`,
+    blockHeight: event.block.number,
+    transactionHash: event.transaction.hash,
+    orderBookAddress: event.srcAddress,
     orderId: event.params.orderId,
     makerAddress: event.params.makerAddress,
     isBuy: event.params.isBuy,
@@ -49,8 +56,6 @@ KuruOrderBook.Trade.handler(async ({ event, context }) => {
     takerAddress: event.params.takerAddress,
     txOrigin: event.params.txOrigin,
     filledSize: event.params.filledSize,
-    blockHeight: event.block.number,
-    orderBookAddress: event.srcAddress,
   };
 
   context.KuruOrderBook_Trade.set(entity);
@@ -59,8 +64,10 @@ KuruOrderBook.Trade.handler(async ({ event, context }) => {
 KuruOrderBook.Initialized.handler(async ({ event, context }) => {
   const entity: KuruOrderBook_Initialized = {
     id: `${event.chainId}_${event.block.number}_${event.logIndex}`,
-    version: event.params.version,
+    blockHeight: event.block.number,
+    transactionHash: event.transaction.hash,
     orderBookAddress: event.srcAddress,
+    version: event.params.version,
   };
 
   context.KuruOrderBook_Initialized.set(entity);
@@ -69,8 +76,10 @@ KuruOrderBook.Initialized.handler(async ({ event, context }) => {
 KuruOrderBook.OwnershipHandoverCanceled.handler(async ({ event, context }) => {
   const entity: KuruOrderBook_OwnershipHandoverCanceled = {
     id: `${event.chainId}_${event.block.number}_${event.logIndex}`,
-    pendingOwner: event.params.pendingOwner,
+    blockHeight: event.block.number,
+    transactionHash: event.transaction.hash,
     orderBookAddress: event.srcAddress,
+    pendingOwner: event.params.pendingOwner,
   };
 
   context.KuruOrderBook_OwnershipHandoverCanceled.set(entity);
@@ -79,8 +88,10 @@ KuruOrderBook.OwnershipHandoverCanceled.handler(async ({ event, context }) => {
 KuruOrderBook.OwnershipHandoverRequested.handler(async ({ event, context }) => {
   const entity: KuruOrderBook_OwnershipHandoverRequested = {
     id: `${event.chainId}_${event.block.number}_${event.logIndex}`,
-    pendingOwner: event.params.pendingOwner,
+    blockHeight: event.block.number,
+    transactionHash: event.transaction.hash,
     orderBookAddress: event.srcAddress,
+    pendingOwner: event.params.pendingOwner,
   };
 
   context.KuruOrderBook_OwnershipHandoverRequested.set(entity);
@@ -89,9 +100,11 @@ KuruOrderBook.OwnershipHandoverRequested.handler(async ({ event, context }) => {
 KuruOrderBook.OwnershipTransferred.handler(async ({ event, context }) => {
   const entity: KuruOrderBook_OwnershipTransferred = {
     id: `${event.chainId}_${event.block.number}_${event.logIndex}`,
+    blockHeight: event.block.number,
+    transactionHash: event.transaction.hash,
+    orderBookAddress: event.srcAddress,
     oldOwner: event.params.oldOwner,
     newOwner: event.params.newOwner,
-    orderBookAddress: event.srcAddress,
   };
 
   context.KuruOrderBook_OwnershipTransferred.set(entity);
@@ -100,8 +113,10 @@ KuruOrderBook.OwnershipTransferred.handler(async ({ event, context }) => {
 KuruOrderBook.Upgraded.handler(async ({ event, context }) => {
   const entity: KuruOrderBook_Upgraded = {
     id: `${event.chainId}_${event.block.number}_${event.logIndex}`,
-    implementation: event.params.implementation,
+    blockHeight: event.block.number,
+    transactionHash: event.transaction.hash,
     orderBookAddress: event.srcAddress,
+    implementation: event.params.implementation,
   };
 
   context.KuruOrderBook_Upgraded.set(entity);

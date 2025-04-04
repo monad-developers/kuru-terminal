@@ -27,13 +27,16 @@ describe("Kuru contract OrderCreated event tests", () => {
     // Creating the expected entity
     const expectedKuruOrderCreated: KuruOrderBook_OrderCreated = {
       id: `${event.chainId}_${event.block.number}_${event.logIndex}`,
+      blockHeight: event.block.number,
+      transactionHash: event.transaction.hash,
+      orderBookAddress: event.srcAddress,
       orderId: event.params.orderId,
       owner: event.params.owner,
       size: event.params.size,
       price: event.params.price,
       isBuy: event.params.isBuy,
-      orderBookAddress: event.srcAddress,
     };
+
     // Asserting that the entity in the mock database is the same as the expected entity
     assert.deepEqual(actualKuruOrderCreated, expectedKuruOrderCreated, "Actual KuruOrderCreated should be the same as the expectedKuruOrderCreated");
   });

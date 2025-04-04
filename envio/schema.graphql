@@ -1,22 +1,29 @@
 type KuruOrderBook_OrderCreated {
   id: ID!
+  blockHeight: Int!
+  transactionHash: String!
+  orderBookAddress: String!
   orderId: BigInt!
   owner: String!
   size: BigInt!
   price: BigInt!
   isBuy: Boolean!
-  orderBookAddress: String!
 }
 
 type KuruOrderBook_OrdersCanceled {
   id: ID!
+  blockHeight: Int!
+  transactionHash: String!
+  orderBookAddress: String!
   orderId: [BigInt!]!
   owner: String!
-  orderBookAddress: String!
 }
 
 type KuruOrderBook_Trade {
   id: ID!
+  blockHeight: Int!
+  transactionHash: String!
+  orderBookAddress: String!
   orderId: BigInt!
   makerAddress: String!
   isBuy: Boolean!
@@ -25,38 +32,46 @@ type KuruOrderBook_Trade {
   takerAddress: String!
   txOrigin: String!
   filledSize: BigInt!
-  blockHeight: Int!
-  orderBookAddress: String!
 }
 
 type KuruOrderBook_Initialized {
   id: ID!
-  version: BigInt!
+  blockHeight: Int!
+  transactionHash: String!
   orderBookAddress: String!
+  version: BigInt!
 }
 
 type KuruOrderBook_OwnershipHandoverCanceled {
   id: ID!
-  pendingOwner: String!
+  blockHeight: Int!
+  transactionHash: String!
   orderBookAddress: String!
+  pendingOwner: String!
 }
 
 type KuruOrderBook_OwnershipHandoverRequested {
   id: ID!
-  pendingOwner: String!
+  blockHeight: Int!
+  transactionHash: String!
   orderBookAddress: String!
+  pendingOwner: String!
 }
 
 type KuruOrderBook_OwnershipTransferred {
   id: ID!
+  blockHeight: Int!
+  transactionHash: String!
+  orderBookAddress: String!
   oldOwner: String!
   newOwner: String!
-  orderBookAddress: String!
 }
 
 type KuruOrderBook_Upgraded {
   id: ID!
-  implementation: String!
+  blockHeight: Int!
+  transactionHash: String!
   orderBookAddress: String!
+  implementation: String!
 }
 
