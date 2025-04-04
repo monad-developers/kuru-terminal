@@ -56,20 +56,28 @@ const TradeComparison = () => {
       <CardHeader>
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <CardTitle>Trade Data</CardTitle>
-          <div className="flex space-x-4">
-            <div className="flex flex-col space-y-1">
-              <span className="text-sm text-muted-foreground whitespace-nowrap">
-                Enabled: {enabled ? "Yes" : "No"}
+          <div className="flex flex-wrap gap-4 items-center">
+            <div className="flex items-center gap-2 border rounded-md p-2.5 bg-muted/20 h-[72px]">
+              <span className="text-sm font-medium whitespace-nowrap mr-2">
+                Data Sources
               </span>
-              <Button size="sm" onClick={() => setEnabled(!enabled)}>
-                Toggle
+              <Button 
+                size="sm" 
+                variant={enabled ? "default" : "outline"}
+                onClick={() => setEnabled(!enabled)}
+              >
+                {enabled ? "Enabled" : "Disabled"}
               </Button>
             </div>
-            <div className="flex flex-col space-y-3">
-              <span className="text-sm text-muted-foreground whitespace-nowrap">
-                Refetch every {refetchInterval / 1000}s
-              </span>
-              <div className="w-32">
+            
+            <div className="border rounded-md p-2.5 bg-muted/20 h-[72px] flex flex-col justify-center">
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="text-sm font-medium">Poll Interval</span>
+                <span className="text-xs font-medium bg-primary/10 px-2 py-0.5 rounded-full">
+                  {refetchInterval / 1000}s
+                </span>
+              </div>
+              <div className="w-36 mt-1.5">
                 <Slider
                   defaultValue={[1000]}
                   min={100}
@@ -80,11 +88,15 @@ const TradeComparison = () => {
                 />
               </div>
             </div>
-            <div className="flex flex-col space-y-3">
-              <span className="text-sm text-muted-foreground whitespace-nowrap">
-                Limit: {limit}
-              </span>
-              <div className="w-32">
+            
+            <div className="border rounded-md p-2.5 bg-muted/20 h-[72px] flex flex-col justify-center">
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="text-sm text-muted-foreground">Limit</span>
+                <span className="text-xs font-medium bg-primary/10 px-2 py-0.5 rounded-full">
+                  {limit}
+                </span>
+              </div>
+              <div className="w-36 mt-1.5">
                 <Slider
                   defaultValue={[20]}
                   min={1}
@@ -115,7 +127,7 @@ const TradeComparison = () => {
                   Envio
                 </TabsTrigger>
                 <TabsTrigger value={Tab.THIRDWEB_INSIGHT}>
-                  thirdweb Insight
+                  Thirdweb Insight
                 </TabsTrigger>
                 <TabsTrigger value={Tab.THEGRAPH_SUBGRAPH}>
                   The Graph Subgraph
@@ -260,7 +272,36 @@ const TradeComparison = () => {
         </CardContent>
       ) : (
         <CardContent>
-          <p className="text-muted-foreground text-center">Please enable data sources to view trades</p>
+          <div className="py-8 flex flex-col items-center justify-center border border-dashed rounded-md bg-muted/5">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="h-12 w-12 text-muted-foreground mb-3"
+            >
+              <path d="M12 2v1" />
+              <path d="M12 21v1" />
+              <path d="m4.6 4.6.7.7" />
+              <path d="m18.7 18.7.7.7" />
+              <path d="M2 12h1" />
+              <path d="M21 12h1" />
+              <path d="m4.6 19.4.7-.7" />
+              <path d="m18.7 5.3.7-.7" />
+              <circle cx="12" cy="12" r="4" />
+            </svg>
+            <p className="text-muted-foreground text-center text-lg">Activate data sources to view trade information</p>
+            <Button 
+              onClick={() => setEnabled(true)} 
+              className="mt-4"
+              variant="outline"
+            >
+              Enable Data Sources
+            </Button>
+          </div>
         </CardContent>
       )}
     </Card>

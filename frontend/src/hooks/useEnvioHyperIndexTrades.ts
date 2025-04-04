@@ -6,7 +6,7 @@ import type { Trade } from "@/src/types/trade.interface";
 export interface EnvioHyperIndexApiTrade {
   id: string;
   blockHeight: number;
-  // transactionHash: string;
+  transactionHash: string;
   filledSize: string;
   isBuy: boolean;
   makerAddress: string;
@@ -27,11 +27,11 @@ export async function getTradesFromEnvioHyperIndex(
   const { data } = await axios.post<EnvioHyperIndexApiTradeResponse>(
     ENVIO_HYPERINDEX_API_URL,
     {
-      // TODO: Add transaction hash once supported from Indexer's side
       query: `{
           KuruOrderBook_Trade(order_by: {blockHeight: desc}, limit: ${limit}) {
             id
             blockHeight
+            transactionHash
             filledSize
             isBuy
             makerAddress
@@ -45,13 +45,7 @@ export async function getTradesFromEnvioHyperIndex(
     }
   );
 
-  const mappedTrades = data.data.KuruOrderBook_Trade.map((trade) => ({
-    ...trade,
-    // TODO: Add transaction hash once supported from Indexer's side
-    transactionHash: "",
-  }));
-
-  return mappedTrades;
+  return data.data.KuruOrderBook_Trade;
 }
 
 export const useEnvioHyperIndexTrades = (enabled: boolean, limit: number, refetchInterval: number) => {
