@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import QueryProvider from "@/src/providers/QueryProvider";
 import { AppProvider } from "@/src/providers/AppProvider";
 import { ThemeProvider } from "next-themes";
+import NavigationBar from "@/src/components/NavigationBar";
 
 import "./globals.css";
 
@@ -25,7 +26,10 @@ export default function RootLayout({
       >
         <QueryProvider>
           <AppProvider>
-            <body className="container mx-auto">{children}</body>
+            <body className="container mx-auto">
+              <NavigationBar />
+              {children}
+            </body>
           </AppProvider>
         </QueryProvider>
       </ThemeProvider>

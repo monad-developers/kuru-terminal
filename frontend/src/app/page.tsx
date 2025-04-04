@@ -3,12 +3,10 @@ import TradeComparison from "@/src/components/TradeComparison";
 export default function Home() {
   return (
     <div className="container py-10">
-      <h1 className="text-3xl font-bold mb-6">Trade Data Comparison</h1>
+      <h1 className="text-3xl font-bold mb-6">Indexing Services Data Viewer</h1>
       <p className="text-muted-foreground mb-10">
-        Compare the performance of different data fetching approaches for
-        displaying trade data
+        View and analyze trade data from multiple chain indexing services on Monad Testnet.
       </p>
-
       <TradeComparison />
     </div>
   );
