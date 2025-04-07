@@ -22,11 +22,41 @@ The Express server processes events from Quicknode Streams:
 - Processes Trade events from the KuruOrderBook contract
 - Stores the event data in a PostgreSQL database using Drizzle ORM
 
+**Running the Webhook Server:**
+
+1.  **Navigate to the webhook directory:**
+    ```bash
+    cd webhook
+    ```
+2.  **Install dependencies:**
+    ```bash
+    pnpm install
+    ```
+3.  **Environment Variables:**
+    Copy `.env.example` to `.env` and configure database connection details.
+    ```bash
+    cp .env.example .env
+    ```
+4.  **Run locally (development):**
+    ```bash
+    pnpm dev
+    ```
+5.  **Run in production:**
+    First, build the server:
+    ```bash
+    pnpm build
+    ```
+    Then, start the server:
+    ```bash
+    pnpm start
+    ```
+
+A Dockerfile is also provided for containerized deployment.
+
 ## Setup
 
-1. Deploy the webhook server (Docker container available)
-2. Configure environment variables for database connection
-3. Deploy the Quicknode Stream pointing to the webhook server
+1.  Set up and run the [Webhook Server](#webhook-server) (locally or deployed, Docker container available). Ensure necessary environment variables (e.g., database connection) are configured.
+2.  Deploy a Quicknode Stream using the provided [Filter Function](#quicknode-stream-filter) and point its webhook destination to the running webhook server endpoint.
 
 ## Architecture
 
@@ -52,10 +82,10 @@ function main(stream) {
   
   // Map of Kuru orderbook contract addresses and their trading pair names
   const kuruOrderbookAddresses = new Set([
-    "0xd3af145f1aa1a471b5f0f62c52cf8fcdc9ab55d3",
-    "0x94b72620e65577de5fb2b8a8b93328caf6ca161b",
-    "0x277bf4a0aac16f19d7bf592feffc8d2d9a890508",
-    "0xd5c1dc181c359f0199c83045a85cd2556b325de0"
+    "0xd3af145f1aa1a471b5f0f62c52cf8fcdc9ab55d3", // MONUSDC
+    "0x94b72620e65577de5fb2b8a8b93328caf6ca161b", // DAKMON 
+    "0x277bf4a0aac16f19d7bf592feffc8d2d9a890508", // CHOGMON  
+    "0xd5c1dc181c359f0199c83045a85cd2556b325de0" // YAKIMON
   ]);
   
   // Array to collect logs only from Kuru orderbook contracts

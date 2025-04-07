@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "build": "tsc --outDir dist",
-    "start": "node dist/server.js",
     "dev": "ts-node src/server.ts",
+    "db:migrate": "drizzle-kit migrate",
+    "start": "node dist/server.js",
     "test": "ts-node tests/client.ts"
   },
   "dependencies": {

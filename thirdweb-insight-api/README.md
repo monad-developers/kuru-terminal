@@ -1,6 +1,6 @@
 # Kuru Indexer - thirdweb Insight API
 
-This app provides an indexing service for smart contract events on Monad Testnet using thridweb Insight API and an API service for querying them. As an example, we use the Kuru Orderbook contracts.
+This app provides an indexing service for smart contract events on Monad Testnet using thridweb Insight API and, an API service for querying them. As an example, we use the Kuru Orderbook contracts.
 
 ## Features
 
@@ -28,9 +28,14 @@ This app provides an indexing service for smart contract events on Monad Testnet
    pnpm db:migrate
    ```
 5. Start the server
-   ```
-   pnpm start
-   ```
+   - **Development:**
+     ```
+     pnpm dev
+     ```
+   - **Production (after building with `pnpm build`):**
+     ```
+     pnpm start
+     ```
 
 ## API Endpoints
 

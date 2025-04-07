@@ -29,11 +29,41 @@ The Express server receives log data from the Goldsky pipeline:
 - Processes and decodes contract logs
 - Stores the decoded data in a database
 
+**Running the Webhook Server:**
+
+1.  **Navigate to the webhook directory:**
+    ```bash
+    cd webhook
+    ```
+2.  **Install dependencies:**
+    ```bash
+    pnpm install
+    ```
+3.  **Environment Variables:**
+    Copy `.env.example` to `.env` and configure database connection details.
+    ```bash
+    cp .env.example .env
+    ```
+4.  **Run locally (development):**
+    ```bash
+    pnpm dev
+    ```
+5.  **Run in production:**
+    First, build the server:
+    ```bash
+    pnpm build
+    ```
+    Then, start the server:
+    ```bash
+    pnpm start
+    ```
+
+A Dockerfile is also provided for containerized deployment.
+
 ## Setup
 
-1. Deploy the webhook server (Docker container available)
-2. Configure environment variables for database connection
-3. Deploy the Goldsky Mirror pipeline pointing to the webhook server
+1.  Set up and run the [Webhook Server](#webhook-server) (locally or deployed, Docker container available). Ensure necessary environment variables (e.g., database connection) are configured.
+2.  Deploy the Goldsky Mirror pipeline defined in `pipeline/kuru-logs-pipeline.yaml`, pointing its webhook sink to the running webhook server endpoint.
 
 ## Usage
 
