@@ -76,7 +76,7 @@ Once deployed, the system automatically:
 The following filter function is used in QuickNode streams to filter logs from Kuru orderbook contracts:
 
 ```javascript
-function main(stream) {
+async function main(stream) {
   // If stream is configured with metadata in the body, the data may be nested under a "data" key
   const data = stream.data ? stream.data : stream;
   
