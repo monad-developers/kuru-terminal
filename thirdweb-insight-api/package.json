@@ -7,7 +7,8 @@
     "dev": "ts-node src/server.ts",
     "db:migrate": "drizzle-kit migrate",
     "start": "node dist/server.js",
-    "test": "ts-node tests/client.ts"
+    "test": "ts-node tests/client.ts",
+    "koyeb:deploy": "koyeb deploy . kuru-indexer-thirdweb-insight-api/kuru-indexer-thirdweb-insight-api-app"
   },
   "dependencies": {
     "@neondatabase/serverless": "^0.10.4",

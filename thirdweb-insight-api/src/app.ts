@@ -28,7 +28,7 @@ const logger = createLogger('API');
 const app = express();
 
 // Start the indexer when the app starts
-const POLLING_INTERVAL = process.env.POLLING_INTERVAL ? parseInt(process.env.POLLING_INTERVAL) : 5000;
+const POLLING_INTERVAL = process.env.POLLING_INTERVAL ? parseInt(process.env.POLLING_INTERVAL) : 1000;
 startIndexer(POLLING_INTERVAL);
 
 // Middleware

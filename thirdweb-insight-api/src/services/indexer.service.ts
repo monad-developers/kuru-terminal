@@ -141,7 +141,7 @@ async function fetchEvents(contractAddress: string, fromBlock: number): Promise<
     let allEvents: RawLog[] = [];
     let currentPage = 0;
     let hasMoreData = true; // Flag to control pagination loop
-    const STANDARD_MAX_PAGES = 10; // Standard limit for normal cases
+    const STANDARD_MAX_PAGES = 2; // Standard limit for normal cases
     const EXTENDED_MAX_PAGES = 30; // Extended limit for stuck cases (high API response duplication)
     let maxPages = STANDARD_MAX_PAGES;
     const pageLimit = 100; // Maximum events per page
@@ -409,7 +409,7 @@ export async function runIndexer(): Promise<void> {
 }
 
 // Run the indexer on a schedule via CRON job
-export function startIndexer(intervalMs: number = 5000): cron.ScheduledTask {
+export function startIndexer(intervalMs: number = 1000): cron.ScheduledTask {
   logger.info(`Starting Kuru Indexer using thirdweb insight API. Interval: ${intervalMs}ms`);
 
   // Run immediately on start
