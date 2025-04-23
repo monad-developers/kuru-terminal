@@ -141,7 +141,7 @@ async function fetchEvents(contractAddress: string, fromBlock: number): Promise<
     let allEvents: RawLog[] = [];
     let currentPage = 0;
     let hasMoreData = true; // Flag to control pagination loop
-    const STANDARD_MAX_PAGES = 2; // Standard limit for normal cases
+    const STANDARD_MAX_PAGES = 5; // Standard limit for normal cases
     const EXTENDED_MAX_PAGES = 30; // Extended limit for stuck cases (high API response duplication)
     let maxPages = STANDARD_MAX_PAGES;
     const pageLimit = 100; // Maximum events per page
