@@ -1,6 +1,6 @@
-# The Graph Subgraph for Kuru Orderbook
+# Subgraph for Kuru Orderbook
 
-This directory contains a subgraph for indexing events from the Kuru Orderbook contracts on the Monad testnet using The Graph Protocol.
+This directory contains the shared subgraph code used for indexing events from Kuru Orderbook contracts on the Monad testnet. The same codebase can be deployed to multiple subgraph providers including The Graph, Alchemy, and Goldsky.
 
 ## Configuration Files
 
@@ -16,58 +16,77 @@ Using a Mustache template for `subgraph.yaml` makes it easy to add new Kuru trad
 
 To add a new contract:
 1.  Add its details (address, start block, network, pair name) to the `kuruContracts` array in `config/trading-pairs.json`.
-2.  Run `pnpm prepare` (or `npm run prepare`) to regenerate `subgraph.yaml`.
+2.  Run `yarn prepare` to regenerate `subgraph.yaml`.
 3.  Re-deploy the subgraph.
 
-## Setup and Deployment
+## Common Setup (Required for All Providers)
 
 **Prerequisites:**
-*   Node.js and pnpm (or npm/yarn)
-*   [Graph CLI](https://thegraph.com/docs/en/cli/): `npm install -g @graphprotocol/graph-cli` or `pnpm add -g @graphprotocol/graph-cli`
+*   Node.js
+*   [Graph CLI](https://thegraph.com/docs/en/cli/): `npm install -g @graphprotocol/graph-cli`
 
 **Steps:**
 
 1.  **Install Dependencies:**
     ```bash
-    pnpm install
-    # or npm install / yarn install
+    yarn
     ```
 
 2.  **Generate Manifest:** (Runs automatically on install via `prepare` script)
     This command uses Mustache to generate `subgraph.yaml` from the template and config.
     ```bash
-    pnpm prepare
+    yarn prepare
     ```
 
 3.  **Generate Code:**
     This generates AssemblyScript types from the GraphQL schema and contract ABIs.
     ```bash
-    pnpm codegen
+    yarn codegen
     ```
 
 4.  **Build Subgraph:**
     Compiles the subgraph to WebAssembly.
     ```bash
-    pnpm build
+    yarn build
     ```
 
-5.  **Deploy to The Graph Studio (Hosted Service):**
-    *   Authenticate (if not done already): `graph auth --studio <YOUR_DEPLOY_KEY>`
-    *   Deploy (replace `<your-studio-slug>` with your actual slug if different from `kuru-subgraph` defined in `package.json`):
-        ```bash
-        # Make sure the subgraph name in package.json ('deploy' script) is correct
-        pnpm deploy
-        ```
+## Deployment Options
 
-6.  **Deploy Locally (Requires a local Graph Node running):**
-    *   Create the subgraph on the local node:
-        ```bash
-        pnpm create-local
-        ```
-    *   Deploy to the local node:
-        ```bash
-        pnpm deploy-local
-        ```
-    *   (To remove): `pnpm remove-local`
+### The Graph Hosted Service
 
-Refer to [The Graph Documentation](https://thegraph.com/docs/en/) for detailed instructions on setting up a local graph node and deploying subgraphs. 
+1.  **Authenticate:**
+    ```bash
+    graph auth --studio <YOUR_DEPLOY_KEY>
+    ```
+
+2.  **Deploy:**
+    ```bash
+    # Make sure the subgraph name in package.json ('deploy' script) is correct
+    yarn deploy
+    ```
+
+### Alchemy Subgraph
+
+1.  **Get your deploy key** from the Alchemy Dashboard.
+
+2.  **Deploy to Alchemy:**
+    ```bash
+    graph deploy example-subgraph-name \
+      --version-label v0.0.1 \
+      --node https://subgraphs.alchemy.com/api/subgraphs/deploy \
+      --deploy-key <YOUR_DEPLOY_KEY> \
+      --ipfs https://ipfs.satsuma.xyz
+    ```
+
+For more details, see [Alchemy Subgraphs Quickstart](https://docs.alchemy.com/reference/subgraphs-quickstart).
+
+### Goldsky Subgraph
+
+1.  **Deploy to Goldsky:**
+    ```bash
+    goldsky subgraph deploy <SUBGRAPH_NAME> \
+      --from-ipfs <IPFS_HASH> \
+      --label <DEPLOYMENT_LABEL>
+    ```
+
+For more details, see [Goldsky Subgraph Guide](https://docs.goldsky.com/subgraphs/migrate-from-the-graph).

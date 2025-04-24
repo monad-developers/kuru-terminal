@@ -20,6 +20,6 @@ This repository contains several subdirectories, each representing a different i
 *   [`goldsky-mirror/`](./goldsky-mirror/README.md): Indexing service using Goldsky Mirror.
 *   [`envio/`](./envio/README.md): Indexing service using Envio.
 *   [`allium-ws-server/`](./allium-ws-server/README.md): Indexing service using Allium Websocket Server.
-*   [`thegraph/`](./thegraph/README.md): Indexing service using The Graph.
+*   [`subgraph/`](./subgraph/README.md): Common subgraph implementation used for The Graph, Alchemy Subgraph, and Goldsky Subgraph deployments.
 
 Please refer to the `README.md` within each subdirectory for specific setup and usage instructions.

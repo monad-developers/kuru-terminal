@@ -5,7 +5,7 @@ import {
   clearStore,
   beforeAll,
   afterAll
-} from "matchstick-as/assembly/index"
+} from "matchstick-as"
 import { BigInt } from "@graphprotocol/graph-ts"
 import { handleInitialized } from "../src/mapping"
 import { createInitializedEvent } from "./kuru-utils"
