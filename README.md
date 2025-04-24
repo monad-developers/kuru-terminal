@@ -1,5 +1,10 @@
-# kuru-terminal
-MVP indexer and app for user trades on Kuru
+# Kuru Terminal
+
+A reference implementation showcasing best practices for indexing Kuru orderbook contracts using multiple indexing services on Monad.
+
+## Project Aim
+
+This project demonstrates high-quality indexing practices for smart contract data on Monad. It integrates multiple indexing services (Goldsky, Allium, Envio, Ponder, QuickNode, TheGraph, Alchemy, and thirdweb) to index Kuru orderbook contract events. The accompanying frontend consumes all the integrated services and compares performance metrics across them.
 
 **Deployment:** [https://kuru-terminal.vercel.app/](https://kuru-terminal.vercel.app/)
 **Compare Indexing Services:** [https://kuru-terminal.vercel.app/compare](https://kuru-terminal.vercel.app/compare)
