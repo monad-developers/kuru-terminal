@@ -50,3 +50,15 @@ This directory contains the Envio indexer configuration for Kuru Orderbook contr
 *   **Clean build artifacts:** `pnpm clean`
 *   **Watch for changes and rebuild:** `pnpm watch`
 *   **Run tests:** `pnpm test`
+*   **Stop docker instances:** `pnpm envio stop`
+
+> A full list of Envio CLI commands can be found [here](https://docs.envio.dev/docs/HyperIndex/cli-commands).
+
+## Performance tips
+
+For maximum performance, we recommend the following:
+
+- Use [loaders](https://docs.envio.dev/docs/HyperIndex/loaders) for data that is frequently updated.
+- Specify [multichain config](https://docs.envio.dev/docs/HyperIndex/latency-at-head) to reduce head latency for multichain indexers
+- Use [indexes](https://docs.envio.dev/docs/HyperIndex/database-performance-optimization) for heavily queried fields 
+- Make use of the [benchmarking framework](https://docs.envio.dev/docs/HyperIndex/benchmarking) to identify bottlenecks and optimize your indexer
