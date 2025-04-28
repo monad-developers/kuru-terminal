@@ -5,8 +5,6 @@ networks:
   rpc: # RPC endpoints as fallback providers for added resillience
   - url: https://testnet-rpc.monad.xyz
     for: fallback
-  - url: https://monad-testnet.drpc.org
-    for: fallback    
   start_block: 6294247
   contracts:
   - name: KuruOrderBook
