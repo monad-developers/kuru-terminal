@@ -68,7 +68,7 @@ export default function IndexingServiceComparison() {
             { name: "TheGraph Subgraph", trades: theGraphSubgraphTrades, tab: Tab.THEGRAPH_SUBGRAPH, latestBlock: 0, hasData: false },
             { name: "Envio HyperIndex", trades: envioHyperIndexTrades, tab: Tab.ENVIO_HYPERINDEX, latestBlock: 0, hasData: false },
             { name: "Ponder", trades: ponderTrades, tab: Tab.PONDER, latestBlock: 0, hasData: false },
-        ];
+        ].sort((a, b) => a.name.localeCompare(b.name));
 
         // Get the latest block from each service
         const servicesWithLatestBlock: ServiceData[] = services.map(service => {
