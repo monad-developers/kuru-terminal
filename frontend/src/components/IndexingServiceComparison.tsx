@@ -296,9 +296,9 @@ export default function IndexingServiceComparison() {
                 {/* Fastest Indexers Card */}
                 <Card className="border-green-500 border-t-4 min-h-[240px]">
                     <CardHeader>
-                        <CardTitle>Lowest Latency Indexers</CardTitle>
+                        <CardTitle>Closest to Benchmark</CardTitle>
                         <CardDescription>
-                            Services with the most up-to-date data, providing the quickest data refresh rates
+                            Services with minimal block height difference from the benchmark
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -324,9 +324,9 @@ export default function IndexingServiceComparison() {
                 {/* Slowest Indexers Card */}
                 <Card className="border-red-500 border-t-4 min-h-[240px]">
                     <CardHeader>
-                        <CardTitle>Lagging Indexers</CardTitle>
+                        <CardTitle>Farthest from Benchmark</CardTitle>
                         <CardDescription>
-                            Services with slower data refresh rates, currently behind the latest block data
+                            Services with largest block height difference from the benchmark
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
@@ -356,7 +356,12 @@ export default function IndexingServiceComparison() {
                         <TableHead className="w-2/5">Indexing Service</TableHead>
                         <TableHead className="w-1/5">Latest Block</TableHead>
                         <TableHead className="w-1/5">Block Difference (vs Benchmark)</TableHead>
-                        <TableHead className="w-1/5">10-Point Moving Average</TableHead>
+                        <TableHead className="w-1/5">
+                            <div className="flex flex-col gap-1">
+                                <span>Moving Average of Block Difference</span>
+                                <span className="text-xs font-normal text-muted-foreground">(Table ordered by this metric)</span>
+                            </div>
+                        </TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
