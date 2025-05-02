@@ -32,25 +32,7 @@ export interface InsightAPIResponse {
   };
 }
 
-// Indexer API types
-
-export interface EventQueryParams {
-  eventType: KuruEvents;
-  sortBy?: string;
-  sortOrder?: 'asc' | 'desc';
-  limit?: number;
-}
-
-export enum KuruEvents {
-  TRADE = 'trade',
-  ORDER_CREATED = 'orderCreated',
-  ORDERS_CANCELED = 'ordersCanceled',
-  INITIALIZED = 'initialized',
-  OWNERSHIP_HANDOVER_CANCELED = 'ownershipHandoverCanceled',
-  OWNERSHIP_HANDOVER_REQUESTED = 'ownershipHandoverRequested',
-  OWNERSHIP_TRANSFERRED = 'ownershipTransferred',
-  UPGRADED = 'upgraded'
-}
+// Indexer types
 
 export interface BlockTracker {
   lastIndexedBlock: number;

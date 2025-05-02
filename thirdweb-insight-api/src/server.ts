@@ -1,49 +1,23 @@
-import app from "./app";
-import dotenv from "dotenv";
-import { createLogger } from "./utils/logger.util";
-import { stopIndexer } from "./services/indexer.service";
-
-// Create logger for this module
-const logger = createLogger('Server');
+import dotenv from 'dotenv';
+import { IndexerService } from './services/indexer.service';
+import { createLogger } from './utils/logger.util';
 
 // Load environment variables
 dotenv.config();
 
-// Set the port
-const PORT = process.env.PORT ? parseInt(process.env.PORT) : 3000;
+// Create logger for this module
+const logger = createLogger('Server');
 
-// Start the server
-const server = app.listen(PORT, () => {
-  logger.info(`Kuru Indexer Thirdweb Insight API server is running on port ${PORT}`);
-});
+// Initialize and start the indexer service
+const indexerService = new IndexerService();
+indexerService.start();
 
-// Handle shutdown gracefully
-process.on("SIGTERM", async () => {
-  logger.info("SIGTERM received, shutting down server gracefully");
-  await stopIndexer();
-  server.close(() => {
-    logger.info("Server closed");
-    process.exit(0);
-  });
-  
-  // Force exit after 10 seconds if server.close() doesn't complete
-  setTimeout(() => {
-    logger.error("Forcing server shutdown after timeout");
-    process.exit(1);
-  }, 10000);
-});
+// Handle process termination
+async function handleShutdown(signal: string) {
+  logger.info(`${signal} signal received. Shutting down gracefully...`);
+  await indexerService.stop();
+  process.exit(0);
+}
 
-process.on("SIGINT", async () => {
-  logger.info("SIGINT received, shutting down server gracefully");
-  await stopIndexer();
-  server.close(() => {
-    logger.info("Server closed");
-    process.exit(0);
-  });
-  
-  // Force exit after 10 seconds if server.close() doesn't complete
-  setTimeout(() => {
-    logger.error("Forcing server shutdown after timeout");
-    process.exit(1);
-  }, 10000);
-});
+process.on('SIGTERM', () => handleShutdown('SIGTERM'));
+process.on('SIGINT', () => handleShutdown('SIGINT'));

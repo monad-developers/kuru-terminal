@@ -1,13 +1,13 @@
-# Kuru Indexer - thirdweb Insight API
+# Thirdweb Insight API Indexer
 
-This app provides an indexing service for smart contract events on Monad Testnet using thridweb Insight API and, an API service for querying them. As an example, we use the Kuru Orderbook contracts.
+This app provides an indexing service for smart contract events on Monad Testnet using thridweb Insight API and a WebSocket server for broadcasting events to clients. As an example, we use the Kuru Orderbook contracts.
 
 ## Features
 
 - **Background Indexing**: Continuously indexes events from Kuru contracts using the thirdweb Insight API
-- **REST API**: Simple API for querying indexed events
-- **Sorting**: Customizable sorting of results
-- **Status Endpoint**: Check the indexer status and event counts
+- **WebSocket Broadcasting**: Broadcasts events to connected clients
+- **Automatic Reconnection**: Automatically reconnects to the thirdweb Insight API
+- **Event Persistence**: Persists events in a database for historical tracking
 
 ## Prerequisites
 
@@ -37,39 +37,27 @@ This app provides an indexing service for smart contract events on Monad Testnet
      pnpm start
      ```
 
-## API Endpoints
+## WebSocket Client Connection
 
-### GET /
+Connect to the WebSocket server at `ws://localhost:8080` (or your configured port).
 
-Home endpoint to check if the API is running.
+### Event Format
 
-### GET /status
+Events are broadcasted in the following format:
 
-Get the current status of the indexer including the last indexed block and event counts.
-
-### GET /events
-
-Query events from the indexer.
-
-Query Parameters:
-- `event_type` (required): The type of event to query (e.g., "trade", "orderCreated")
-- `sort_by` (optional): The field to sort by (default: "block_number")
-- `sort_order` (optional): The sort order, either "asc" or "desc" (default: "desc")
-- `limit` (optional): The number of events to return per page (default: 20, max: 100)
-
-Example:
-```
-GET /events?event_type=trade&sort_by=block_number&sort_order=desc&limit=10
+```typescript
+{
+  type: 'events',
+  timestamp: string,
+  events: {
+    trade: TradeEvent[]
+  }
+}
 ```
 
-## Project Structure
+### Heartbeat
 
-- `src/app.ts`: Express application setup
-- `src/server.ts`: Server startup
-- `src/services/indexer.ts`: Background indexing logic
-- `src/services/eventProcessor.ts`: Event processing and database storage
-- `src/services/api.ts`: API logic for retrieving events
-- `src/utils.ts`: Utility functions
-- `src/types.ts`: TypeScript type definitions
-- `src/db/`: Database schema and connection
-- `config/`: Contract configuration
+The server implements a heartbeat mechanism to maintain connection health:
+- Server sends ping every 30 seconds
+- Clients must respond with pong
+- Connections are terminated if no pong is received
