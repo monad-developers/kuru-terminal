@@ -19,7 +19,7 @@ import {
   ALLIUM_WS_URL,
   GOLDSKY_MIRROR_WS_URL,
   QUICKNODE_STREAM_WS_URL,
-  THIRDWEB_INSIGHT_API_URL,
+  THIRDWEB_INSIGHT_WS_URL,
 } from "@/src/config/env.config";
 import { Tab } from "@/src/enums/tab.enum";
 import { useApp } from "@/src/providers/AppProvider";
@@ -185,8 +185,8 @@ const TradeComparison = () => {
                 <h3 className="font-medium mb-1">thirdweb Insight</h3>
                 <p className="text-sm  text-muted-foreground">
                   This tab fetches trade data using thirdweb Insight's API hosted on{" "}
-                  <a href={THIRDWEB_INSIGHT_API_URL} className="underline">
-                    {THIRDWEB_INSIGHT_API_URL}
+                  <a href={THIRDWEB_INSIGHT_WS_URL} className="underline">
+                    {THIRDWEB_INSIGHT_WS_URL}
                   </a>
                 </p>
               </div>

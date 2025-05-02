@@ -139,7 +139,7 @@ export class IndexerService {
       let allEvents: RawLog[] = [];
       let currentPage = 0;
       let hasMoreData = true;
-      const STANDARD_MAX_PAGES = 5;
+      const STANDARD_MAX_PAGES = 8;
       const EXTENDED_MAX_PAGES = 30;
       let maxPages = STANDARD_MAX_PAGES;
       const pageLimit = 100;

@@ -174,7 +174,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     trades: thirdwebInsightTrades, 
     loading: thirdwebInsightLoading, 
     error: thirdwebInsightError 
-  } = useThirdwebInsightTrades(enabled, limit, refetchInterval);
+  } = useThirdwebInsightTrades(enabled, limit);
 
   // Alchemy Subgraph trades state
   const {
