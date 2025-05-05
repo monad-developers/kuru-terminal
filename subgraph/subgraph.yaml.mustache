@@ -17,33 +17,19 @@ dataSources:
       apiVersion: 0.0.9
       language: wasm/assemblyscript
       entities:
-        - Initialized
-        - OrderCreated
-        - OrdersCanceled
-        - OwnershipHandoverCanceled
-        - OwnershipHandoverRequested
-        - OwnershipTransferred
         - Trade
-        - Upgraded
+        # Note: To add more events:
+        # 1. Add new entity name here
+        # 2. Define entity in schema.graphql
+        # 3. Add event handler in mapping.ts
       abis:
         - name: KuruOrderBook
           file: ./abis/KuruOrderBook.json
       eventHandlers:
-        - event: Initialized(uint64)
-          handler: handleInitialized
-        - event: OrderCreated(uint40,address,uint96,uint32,bool)
-          handler: handleOrderCreated
-        - event: OrdersCanceled(uint40[],address)
-          handler: handleOrdersCanceled
-        - event: OwnershipHandoverCanceled(indexed address)
-          handler: handleOwnershipHandoverCanceled
-        - event: OwnershipHandoverRequested(indexed address)
-          handler: handleOwnershipHandoverRequested
-        - event: OwnershipTransferred(indexed address,indexed address)
-          handler: handleOwnershipTransferred
         - event: Trade(uint40,address,bool,uint256,uint96,address,address,uint96)
           handler: handleTrade
-        - event: Upgraded(indexed address)
-          handler: handleUpgraded
+          # Note: To add more event handlers:
+          # - event: NewEvent(param1,param2,...)
+          #   handler: handleNewEvent
       file: ./src/mapping.ts
 {{/tradingPairs}} 

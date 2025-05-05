@@ -1,12 +1,12 @@
 # Subgraph for Kuru Orderbook
 
-This directory contains the shared subgraph code used for indexing events from Kuru Orderbook contracts on the Monad testnet. The same codebase can be deployed to multiple subgraph providers including The Graph, Alchemy, and Goldsky.
+This directory contains the shared subgraph code used for indexing events (Trade) from Kuru Orderbook contracts on the Monad testnet. The same codebase can be deployed to multiple subgraph providers including The Graph, Alchemy, and Goldsky.
 
 ## Configuration Files
 
 *   `subgraph.yaml.mustache`: A [Mustache](https://mustache.github.io/) template for the subgraph manifest.
 *   `config/trading-pairs.json`: Contains the list of contract addresses and start blocks for different Kuru trading pairs. This data is injected into the Mustache template to generate the final `subgraph.yaml`.
-*   `schema.graphql`: Defines the structure of the data (entities) to be stored and queried (e.g., `Trade`, `OrderCreated`, `Pair`).
+*   `schema.graphql`: Defines the structure of the data (entities) to be stored and queried (e.g., `Trade`).
 *   `src/mapping.ts`: Contains the AssemblyScript code (mapping functions) that transforms blockchain events into graph entities defined in the schema.
 *   `abis/`: Contains the ABI JSON files for the Kuru contracts.
 

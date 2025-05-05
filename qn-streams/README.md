@@ -1,6 +1,6 @@
 # Kuru Quicknode Streams Webhook
 
-This folder contains the components needed to process and index KuruOrderBook contract events using Quicknode Streams.
+This folder contains the components needed to process and index KuruOrderBook contract events (Trade) using Quicknode Streams.
 
 ## Directory Structure
 
