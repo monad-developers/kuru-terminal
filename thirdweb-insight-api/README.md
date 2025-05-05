@@ -1,6 +1,6 @@
 # Thirdweb Insight API Indexer
 
-This app provides an indexing service for smart contract events on Monad Testnet using thridweb Insight API and a WebSocket server for broadcasting events to clients. As an example, we use the Kuru Orderbook contracts.
+This app provides an indexing service for smart contract events on Monad Testnet using thridweb Insight API and a WebSocket server for broadcasting events to clients. As an example, we use the Kuru Orderbook contract and index Trade events.
 
 ## Features
 
