@@ -21,6 +21,18 @@ dotenv.config();
 // Create contract instance
 const kuruOrderBookContract = new ethers.Contract('0x0000000000000000000000000000000000000000', kuruOrderBookABI);
 
+/**
+ * EventStreamServer class that handles WebSocket connections and Kafka message processing
+ * for Kuru Order Book Trade events.
+ * 
+ * Currently focused on Trade events only for simplicity and demonstration purposes.
+ * 
+ * Note: To add support for more events:
+ * 1. Update the SUPPORTED_EVENTS array in types.ts
+ * 2. Add event interface in EventData (types.ts)
+ * 3. Add event processing logic in formatEventData method
+ * 4. Update documentation accordingly
+ */
 class EventStreamServer {
     private readonly wss: WebSocketServer;
     private readonly kafkaConsumer: KafkaConsumer;
@@ -36,18 +48,21 @@ class EventStreamServer {
             tradingPairsConfig.tradingPairs.map(pair => pair.address.toLowerCase())
         );
         
-        console.log(`Filtering events for ${this.validContractAddresses.size} contract addresses:`, 
+        console.log(`Filtering Trade events for ${this.validContractAddresses.size} contract addresses:`, 
             Array.from(this.validContractAddresses));
 
         this.initializeWebSocketHandlers();
         this.initializeKafkaHandlers();
     }
 
+    /**
+     * Initializes WebSocket server, Kafka consumer and event mappings
+     */
     public static async initialize(): Promise<EventStreamServer> {
         // Initialize WebSocket Server
         const wss = await EventStreamServer.createWebSocketServer();
 
-        // Initialize event topic map with non-null topic hashes
+        // Initialize event topic map for Trade event
         const eventTopicMap = new Map(
             SUPPORTED_EVENTS.map(eventName => {
                 const event = kuruOrderBookContract.interface.getEvent(eventName);
@@ -67,8 +82,7 @@ class EventStreamServer {
     }
 
     /**
-     * Creates a WebSocket server instance.
-     * Handles only the server creation, event handlers are set up separately.
+     * Creates WebSocket server instance with default configuration
      */
     private static createWebSocketServer(): WebSocketServer {
         return new WebSocketServer({ 
@@ -81,8 +95,7 @@ class EventStreamServer {
     }
 
     /**
-     * Creates and connects to a Kafka consumer with the specified configuration.
-     * Handles only the connection setup, event handlers are set up separately.
+     * Creates Kafka consumer with configured authentication and topic subscription
      */
     private static async createKafkaConsumer(): Promise<KafkaConsumer> {
         if (!process.env.BOOTSTRAP_SERVERS || !process.env.CLUSTER_API_KEY || !process.env.CLUSTER_API_SECRET) {
@@ -120,8 +133,7 @@ class EventStreamServer {
     }
 
     /**
-     * Initializes WebSocket event handlers and connection management.
-     * Sets up connection handling, heartbeat, and client lifecycle management.
+     * Sets up WebSocket connection handlers and heartbeat mechanism
      */
     private initializeWebSocketHandlers() {
         console.log('WebSocket server initialized and listening for connections...');
@@ -167,8 +179,7 @@ class EventStreamServer {
     }
 
     /**
-     * Initializes Kafka consumer's 'data' event handler and topic subscription.
-     * Sets up message processing pipeline and error handling.
+     * Sets up Kafka consumer event handlers and message processing
      */
     private async initializeKafkaHandlers() {
         try {
@@ -201,6 +212,11 @@ class EventStreamServer {
         }
     }
 
+    /**
+     * Processes blockchain log into typed event data
+     * @param log - Raw blockchain log from Kafka stream
+     * @returns Processed event data or null if invalid
+     */
     private processEvent(log: BlockchainLog): ProcessedEvent | null {
         const topics = [log.topic0, log.topic1, log.topic2, log.topic3].filter(topic => topic !== null);
 
@@ -235,6 +251,20 @@ class EventStreamServer {
         }
     }
 
+    /**
+     * Formats event data based on the event type.
+     * Currently only handles Trade events.
+     * 
+     * @param contractAddress - Address of the contract that emitted the event
+     * @param eventName - Name of the event
+     * @param data - Decoded event data
+     * @returns Formatted event data
+     * 
+     * Note: When adding new events:
+     * 1. Add a new case in the switch statement
+     * 2. Implement the corresponding data formatting logic
+     * 3. Update the return type in the EventData interface (types.ts)
+     */
     private formatEventData(contractAddress: string, eventName: SupportedEvent, data: ethers.Result): EventData[SupportedEvent] {
         switch (eventName) {
             case 'Trade':
@@ -249,46 +279,14 @@ class EventStreamServer {
                     filledSize: data.filledSize.toString(),
                     orderBookAddress: contractAddress
                 };
-            case 'OrderCreated':
-                return {
-                    orderId: data.orderId.toString(),
-                    owner: data.owner,
-                    size: data.size.toString(),
-                    price: data.price.toString(),
-                    isBuy: data.isBuy,
-                    orderBookAddress: contractAddress
-                };
-            case 'OrdersCanceled':
-                return {
-                    orderIds: data.orderId.map((id: ethers.BigNumberish) => id.toString()),
-                    owner: data.owner,
-                    orderBookAddress: contractAddress
-                };
-            case 'Initialized':
-                return {
-                    version: data.version.toString(),
-                    orderBookAddress: contractAddress
-                };
-            case 'OwnershipHandoverCanceled':
-            case 'OwnershipHandoverRequested':
-                return {
-                    pendingOwner: data.pendingOwner,
-                    orderBookAddress: contractAddress
-                };
-            case 'OwnershipTransferred':
-                return {
-                    oldOwner: data.oldOwner,
-                    newOwner: data.newOwner,
-                    orderBookAddress: contractAddress
-                };
-            case 'Upgraded':
-                return {
-                    implementation: data.implementation,
-                    orderBookAddress: contractAddress
-                };
         }
     }
 
+    /**
+     * Broadcasts event data to all connected WebSocket clients
+     * 
+     * @param data - Processed event data to broadcast
+     */
     private broadcast(data: ProcessedEvent) {
         const message = JSON.stringify(data);
         this.connectedClients.forEach(client => {
@@ -298,6 +296,9 @@ class EventStreamServer {
         });
     }
 
+    /**
+     * Gracefully shuts down WebSocket server and Kafka consumer
+     */
     public shutdown() {
         this.kafkaConsumer.disconnect();
         this.wss.close();

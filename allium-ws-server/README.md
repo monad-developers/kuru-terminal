@@ -1,11 +1,11 @@
 # Allium WebSocket Server
 
-This directory contains a WebSocket server that processes Kuru Orderbook events sourced from an Allium Datastream (via Confluent Cloud Kafka) and broadcasts them to connected clients via a WebSocket server.
+This directory contains a WebSocket server that processes Kuru Orderbook events (Trade) sourced from an Allium Datastream (via Confluent Cloud Kafka) and broadcasts them to connected clients via a WebSocket server.
 
 ## Features
 
 *   Connects to a Confluent Cloud Kafka cluster to consume Allium Datastreams.
-*   Decodes Kuru Orderbook contract events (e.g., `Trade`).
+*   Decodes Kuru Orderbook contract event (`Trade`).
 *   Broadcasts processed events to connected WebSocket clients.
 
 ## Setup
@@ -42,4 +42,4 @@ This directory contains a WebSocket server that processes Kuru Orderbook events 
 
 ## Connecting
 
-WebSocket clients can connect to `ws://localhost:{PORT}` (or the deployed server address) to receive event data. 
+WebSocket clients can connect to `ws://localhost:{PORT}` (or the deployed server address) to receive Trade events. 
