@@ -1,6 +1,6 @@
 # Goldsky Mirror for KuruOrderBook
 
-This repository contains the components needed to index KuruOrderBook contract logs using Goldsky Mirror Pipeline.
+This repository contains the components needed to index KuruOrderBook contract events (Trade) using Goldsky Mirror Pipeline.
 
 ## Directory Structure
 
@@ -25,11 +25,20 @@ The pipeline configuration (`kuru-logs-pipeline.yaml`) defines a Goldsky Mirror 
 
 ### Webhook Server
 
-The Express server receives log data from the Goldsky pipeline:
-- Processes and decodes contract logs
-- Stores the decoded data in a database
+The Express server processes blockchain data from the Goldsky pipeline:
+- Receives and decodes Trade events from contract logs
+- Broadcasts events via WebSocket to connected clients
+- Stores events in a PostgreSQL database
 
-**Running the Webhook Server:**
+### WebSocket Service
+
+The server includes a WebSocket service for real-time event broadcasting:
+- Runs on a configurable port (default: 8080)
+- Maintains client connections with heartbeat mechanism
+- Broadcasts Trade events to all connected clients
+- Provides connection status and event updates
+
+## Setup
 
 1.  **Navigate to the webhook directory:**
     ```bash
@@ -40,10 +49,15 @@ The Express server receives log data from the Goldsky pipeline:
     pnpm install
     ```
 3.  **Environment Variables:**
-    Copy `.env.example` to `.env` and configure database connection details.
+    Copy `.env.example` to `.env` and configure:
     ```bash
     cp .env.example .env
     ```
+    Required variables:
+    - `DATABASE_URL`: PostgreSQL connection string
+    - `WEBHOOK_PORT`: HTTP server port (default: 3000)
+    - `WS_PORT`: WebSocket server port (default: 8080)
+
 4.  **Run locally (development):**
     ```bash
     pnpm dev
@@ -60,6 +74,26 @@ The Express server receives log data from the Goldsky pipeline:
 
 A Dockerfile is also provided for containerized deployment.
 
+## WebSocket Client Connection
+
+To connect to the WebSocket server and receive real-time Trade events:
+
+```javascript
+const ws = new WebSocket('ws://your-server:8080');
+
+ws.onmessage = (event) => {
+  const data = JSON.parse(event.data);
+  
+  if (data.type === 'connection') {
+    console.log('Connected to server');
+  }
+  
+  if (data.type === 'events') {
+    console.log('Received trade events:', data.events.trade);
+  }
+};
+```
+
 ## Setup
 
 1.  Set up and run the [Webhook Server](#webhook-server) (locally or deployed, Docker container available). Ensure necessary environment variables (e.g., database connection) are configured.
@@ -69,5 +103,5 @@ A Dockerfile is also provided for containerized deployment.
 
 Once deployed, the system automatically:
 1. Monitors the Monad testnet blockchain for logs from KuruOrderBook contracts
-2. Processes these logs through the Goldsky pipeline
-3. Stores the decoded data for use in applications
+2. Processes Trade events through the Goldsky pipeline
+3. Stores events in the database and broadcasts them to WebSocket clients

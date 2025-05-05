@@ -2,28 +2,21 @@ import { ethers } from "ethers";
 import { KuruEvents, RawLog } from "../types";
 import kuruOrderBookABI from "../abis/KuruOrderBook.json";
 import {
-  TradeEvent,
-  OrderCreatedEvent,
-  OrdersCanceledEvent,
-  InitializedEvent,
-  OwnershipHandoverCanceledEvent,
-  OwnershipHandoverRequestedEvent,
-  OwnershipTransferredEvent,
-  UpgradedEvent,
+  TradeEvent
 } from "../db/types";
 
-// Create contract interface for event parsing
+/**
+ * Contract interface and event topics for KuruOrderBook events
+ * Currently only handling Trade events
+ * 
+ * Note: To add support for more events:
+ * 1. Add event topic hash to eventTopics
+ * 2. Add event decoding logic in decodeEventData
+ * 3. Update KuruEvents interface in types.ts
+ */
 const contractInterface = new ethers.Interface(kuruOrderBookABI);
-// Get event topic hashes
 export const eventTopics = {
   trade: contractInterface.getEvent("Trade")?.topicHash.toLowerCase(),
-  orderCreated: contractInterface.getEvent("OrderCreated")?.topicHash.toLowerCase(),
-  ordersCanceled: contractInterface.getEvent("OrdersCanceled")?.topicHash.toLowerCase(),
-  initialized: contractInterface.getEvent("Initialized")?.topicHash.toLowerCase(),
-  ownershipHandoverCanceled: contractInterface.getEvent("OwnershipHandoverCanceled")?.topicHash.toLowerCase(),
-  ownershipHandoverRequested: contractInterface.getEvent("OwnershipHandoverRequested")?.topicHash.toLowerCase(),
-  ownershipTransferred: contractInterface.getEvent("OwnershipTransferred")?.topicHash.toLowerCase(),
-  upgraded: contractInterface.getEvent("Upgraded")?.topicHash.toLowerCase(),
 };
 
 /**
@@ -70,8 +63,15 @@ export function deduplicateLogs(logs: RawLog[]): RawLog[] {
   return result;
 }
 
-// Helper function to decode event data
-export function decodeEventData(log: RawLog) {
+/**
+ * Decodes raw log data into typed event data
+ * Currently only decodes Trade events
+ * 
+ * Note: To add support for more events:
+ * 1. Add new case in switch statement with decoding logic
+ * 2. Update return type to include new event type
+ */
+export function decodeEventData(log: RawLog): TradeEvent | null {
   const topics = log.topics.split(",");
   const eventTopic = topics[0].toLowerCase();
 
@@ -99,66 +99,6 @@ export function decodeEventData(log: RawLog) {
           filled_size: filledSize.toString(),
         } as TradeEvent;
       }
-      case eventTopics.orderCreated: {
-        const [orderId, owner, size, price, isBuy] =
-          contractInterface.decodeEventLog("OrderCreated", log.data, topics);
-        return {
-          ...baseEvent,
-          order_id: orderId.toString(),
-          owner,
-          size: size.toString(),
-          price: price.toString(),
-          is_buy: isBuy,
-        } as OrderCreatedEvent;
-      }
-      case eventTopics.ordersCanceled: {
-        const [orderIds, owner] =
-          contractInterface.decodeEventLog("OrdersCanceled", log.data, topics);
-        return {
-          ...baseEvent,
-          order_ids: JSON.stringify(orderIds.map((id: bigint) => id.toString())),
-          owner,
-        } as OrdersCanceledEvent;
-      }
-      case eventTopics.initialized: {
-        const [version] = contractInterface.decodeEventLog("Initialized", log.data, topics);
-        return {
-          ...baseEvent,
-          version: version.toString(),
-        } as InitializedEvent;
-      }
-      case eventTopics.ownershipHandoverCanceled: {
-        const [pendingOwner] =
-          contractInterface.decodeEventLog("OwnershipHandoverCanceled", log.data, topics);
-        return {
-          ...baseEvent,
-          pending_owner: pendingOwner,
-        } as OwnershipHandoverCanceledEvent;
-      }
-      case eventTopics.ownershipHandoverRequested: {
-        const [pendingOwner] =
-          contractInterface.decodeEventLog("OwnershipHandoverRequested", log.data, topics);
-        return {
-          ...baseEvent,
-          pending_owner: pendingOwner,
-        } as OwnershipHandoverRequestedEvent;
-      }
-      case eventTopics.ownershipTransferred: {
-        const [oldOwner, newOwner] =
-          contractInterface.decodeEventLog("OwnershipTransferred", log.data, topics);
-        return {
-          ...baseEvent,
-          old_owner: oldOwner,
-          new_owner: newOwner,
-        } as OwnershipTransferredEvent;
-      }
-      case eventTopics.upgraded: {
-        const [implementation] = contractInterface.decodeEventLog("Upgraded", log.data, topics);
-        return {
-          ...baseEvent,
-          implementation,
-        } as UpgradedEvent;
-      }
       default:
         return null;
     }
@@ -168,17 +108,17 @@ export function decodeEventData(log: RawLog) {
   }
 }
 
-// Helper function to filter and group events by type
+/**
+ * Processes raw logs into typed KuruEvents
+ * Currently only processes Trade events
+ * 
+ * Note: To add support for more events:
+ * 1. Add new event array to KuruEvents interface
+ * 2. Add case in switch statement to handle new event type
+ */
 export function getKuruEventsFromLogs(logs: RawLog[]): KuruEvents {
   const kuruEvents: KuruEvents = {
     trade: [],
-    orderCreated: [],
-    ordersCanceled: [],
-    initialized: [],
-    ownershipHandoverCanceled: [],
-    ownershipHandoverRequested: [],
-    ownershipTransferred: [],
-    upgraded: [],
   };
 
   const deduplicatedLogs = deduplicateLogs(logs);
@@ -194,27 +134,6 @@ export function getKuruEventsFromLogs(logs: RawLog[]): KuruEvents {
     switch (eventTopic) {
       case eventTopics.trade:
         kuruEvents.trade.push(decodedEvent as TradeEvent);
-        break;
-      case eventTopics.orderCreated:
-        kuruEvents.orderCreated.push(decodedEvent as OrderCreatedEvent);
-        break;
-      case eventTopics.ordersCanceled:
-        kuruEvents.ordersCanceled.push(decodedEvent as OrdersCanceledEvent);
-        break;
-      case eventTopics.initialized:
-        kuruEvents.initialized.push(decodedEvent as InitializedEvent);
-        break;
-      case eventTopics.ownershipHandoverCanceled:
-        kuruEvents.ownershipHandoverCanceled.push(decodedEvent as OwnershipHandoverCanceledEvent);
-        break;
-      case eventTopics.ownershipHandoverRequested:
-        kuruEvents.ownershipHandoverRequested.push(decodedEvent as OwnershipHandoverRequestedEvent);
-        break;
-      case eventTopics.ownershipTransferred:
-        kuruEvents.ownershipTransferred.push(decodedEvent as OwnershipTransferredEvent);
-        break;
-      case eventTopics.upgraded:
-        kuruEvents.upgraded.push(decodedEvent as UpgradedEvent);
         break;
     }
   }

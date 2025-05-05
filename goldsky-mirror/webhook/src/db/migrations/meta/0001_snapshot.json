@@ -1,0 +1,104 @@
+{
+  "id": "c3a8d7f5-19b3-4bdf-b986-d58d9e243311",
+  "prevId": "789b0dde-02e7-4a64-b697-d4a182f8fcdd",
+  "version": "7",
+  "dialect": "postgresql",
+  "tables": {
+    "public.trades": {
+      "name": "trades",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "block_number": {
+          "name": "block_number",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "transaction_hash": {
+          "name": "transaction_hash",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "order_book_address": {
+          "name": "order_book_address",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "order_id": {
+          "name": "order_id",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "maker_address": {
+          "name": "maker_address",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "is_buy": {
+          "name": "is_buy",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "price": {
+          "name": "price",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "updated_size": {
+          "name": "updated_size",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "taker_address": {
+          "name": "taker_address",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "tx_origin": {
+          "name": "tx_origin",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "filled_size": {
+          "name": "filled_size",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
+  "views": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}
