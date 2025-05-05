@@ -1,6 +1,6 @@
 # Envio Indexer
 
-This directory contains the Envio indexer configuration for Kuru Orderbook contracts on the Monad testnet.
+This directory contains the Envio indexer configuration for Kuru Orderbook events (Trade) on the Monad testnet.
 
 *Please refer to the [Envio documentation website](https://docs.envio.dev) for a thorough guide on all [Envio](https://envio.dev) indexer features.*
 

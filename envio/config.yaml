@@ -5,7 +5,7 @@ networks:
   rpc: # RPC endpoints as fallback providers for added resillience
   - url: https://testnet-rpc.monad.xyz
     for: fallback
-  start_block: 6294247
+  start_block: 14878237
   contracts:
   - name: KuruOrderBook
     address:
@@ -15,14 +15,13 @@ networks:
     - 0xD5C1Dc181c359f0199c83045A85Cd2556B325De0
     handler: src/EventHandlers.ts
     events:
-    - event: OrderCreated(uint40 orderId, address owner, uint96 size, uint32 price, bool isBuy)
-    - event: OrdersCanceled(uint40[] orderId, address owner)
     - event: Trade(uint40 orderId, address makerAddress, bool isBuy, uint256 price, uint96 updatedSize, address takerAddress, address txOrigin, uint96 filledSize)
-    - event: Initialized(uint64 version)
-    - event: OwnershipHandoverCanceled(address indexed pendingOwner)
-    - event: OwnershipHandoverRequested(address indexed pendingOwner)
-    - event: OwnershipTransferred(address indexed oldOwner, address indexed newOwner)
-    - event: Upgraded(address indexed implementation)
+    # Note: To index additional events:
+    # 1. Add new event signatures here following the same format:
+    # - event: OrderCreated(uint40 orderId, address owner, uint96 size, uint32 price, bool isBuy)
+    # - event: OrdersCanceled(uint40[] orderId, address owner)
+    # 2. Update schema.graphql with corresponding entity types
+    # 3. Add event handlers in src/EventHandlers.ts
 field_selection:
   transaction_fields:
     - hash

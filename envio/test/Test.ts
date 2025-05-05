@@ -1,43 +1,46 @@
 import assert from "assert";
 import { 
   TestHelpers,
-  KuruOrderBook_OrderCreated
+  KuruOrderBook_Trade
 } from "generated";
 const { MockDb, KuruOrderBook } = TestHelpers;
 
-describe("Kuru contract OrderCreated event tests", () => {
+describe("Kuru contract Trade event tests", () => {
   // Create mock db
   const mockDb = MockDb.createMockDb();
 
-  // Creating mock for Kuru contract OrderCreated event
-  const event = KuruOrderBook.OrderCreated.createMockEvent({/* It mocks event fields with default values. You can overwrite them if you need */});
+  // Creating mock for Kuru contract Trade event
+  const event = KuruOrderBook.Trade.createMockEvent({/* It mocks event fields with default values. You can overwrite them if you need */});
 
-  it("Kuru_OrderCreated is created correctly", async () => {
+  it("Kuru_Trade is created correctly", async () => {
     // Processing the event
-    const mockDbUpdated = await KuruOrderBook.OrderCreated.processEvent({
+    const mockDbUpdated = await KuruOrderBook.Trade.processEvent({
       event,
       mockDb,
     });
 
     // Getting the actual entity from the mock database
-    let actualKuruOrderCreated = mockDbUpdated.entities.KuruOrderBook_OrderCreated.get(
+    let actualKuruTrade = mockDbUpdated.entities.KuruOrderBook_Trade.get(
       `${event.chainId}_${event.block.number}_${event.logIndex}`
     );
 
     // Creating the expected entity
-    const expectedKuruOrderCreated: KuruOrderBook_OrderCreated = {
+    const expectedKuruTrade: KuruOrderBook_Trade = {
       id: `${event.chainId}_${event.block.number}_${event.logIndex}`,
       blockHeight: event.block.number,
       transactionHash: event.transaction.hash,
       orderBookAddress: event.srcAddress,
       orderId: event.params.orderId,
-      owner: event.params.owner,
-      size: event.params.size,
-      price: event.params.price,
+      makerAddress: event.params.makerAddress,
       isBuy: event.params.isBuy,
+      price: event.params.price,
+      updatedSize: event.params.updatedSize,
+      takerAddress: event.params.takerAddress,
+      txOrigin: event.params.txOrigin,
+      filledSize: event.params.filledSize,
     };
 
     // Asserting that the entity in the mock database is the same as the expected entity
-    assert.deepEqual(actualKuruOrderCreated, expectedKuruOrderCreated, "Actual KuruOrderCreated should be the same as the expectedKuruOrderCreated");
+    assert.deepEqual(actualKuruTrade, expectedKuruTrade, "Actual KuruTrade should be the same as the expectedKuruTrade");
   });
 });
