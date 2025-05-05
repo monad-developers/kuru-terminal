@@ -4,6 +4,15 @@ import { KuruOrderBookAbi } from "./abis/KuruOrderBookAbi";
 
 import "dotenv/config";
 
+/**
+ * Ponder configuration for KuruOrderBook indexing
+ * Currently configured to index Trade events only
+ * 
+ * Note: To add more events:
+ * 1. Add new event filter in the contracts.KuruOrderBookAbi.filter array
+ * 2. Create corresponding table in ponder.schema.ts
+ * 3. Add event handler in index.ts
+ */
 export default createConfig({
   // Database config can be overridden via Ponder Cloud UI, where you can either use your own connection URL or spin up a managed DB by Neon
   database: {
@@ -30,11 +39,13 @@ export default createConfig({
         "0xD5C1Dc181c359f0199c83045A85Cd2556B325De0", // YAKIMON
         // Add more contract addresses here
       ],
-      filter: {
+      // Currently filtering for Trade events only
+      // To add more events, include additional filter objects here
+      filter: [{
         event: "Trade",
         args: {},
-      },
-      startBlock: 6294247,
+      }],
+      startBlock: 14878237,
       endBlock: undefined,
     },
   },
