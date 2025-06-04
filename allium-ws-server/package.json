@@ -9,7 +9,11 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/server.js",
-    "dev": "ts-node src/server.ts"
+    "dev": "ts-node src/server.ts",
+    "koyeb:deploy": "koyeb deploy . kuru-indexer-allium/kuru-indexer-allium-server",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push"
   },
   "keywords": [],
   "author": "",
@@ -17,15 +21,19 @@
   "devDependencies": {
     "@types/node": "^20.11.24",
     "@types/ws": "^8.5.10",
+    "drizzle-kit": "^0.30.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   },
   "dependencies": {
     "@confluentinc/kafka-javascript": "^1.2.0",
+    "@neondatabase/serverless": "^0.10.4",
     "dotenv": "^16.4.5",
+    "drizzle-orm": "^0.40.0",
     "ethers": "^6.11.1",
     "ws": "^8.16.0"
   },
+  "packageManager": "pnpm@10.11.1+sha512.e519b9f7639869dc8d5c3c5dfef73b3f091094b0a006d7317353c72b124e80e1afd429732e28705ad6bfa1ee879c1fce46c128ccebd3192101f43dd67c667912",
   "pnpm": {
     "onlyBuiltDependencies": [
       "@confluentinc/kafka-javascript"

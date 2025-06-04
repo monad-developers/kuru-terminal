@@ -1,12 +1,13 @@
 # Allium WebSocket Server
 
-This directory contains a WebSocket server that processes Kuru Orderbook events (Trade) sourced from an Allium Datastream (via Confluent Cloud Kafka) and broadcasts them to connected clients via a WebSocket server.
+This directory contains a WebSocket server that processes Kuru Orderbook events (Trade) sourced from an Allium Datastream (via Confluent Cloud Kafka), broadcasts them to connected clients via WebSocket, and persists them to a PostgreSQL database.
 
 ## Features
 
 *   Connects to a Confluent Cloud Kafka cluster to consume Allium Datastreams.
 *   Decodes Kuru Orderbook contract event (`Trade`).
 *   Broadcasts processed events to connected WebSocket clients.
+*   **Persists Trade events to PostgreSQL database using Drizzle ORM.**
 
 ## Setup
 
@@ -16,21 +17,39 @@ This directory contains a WebSocket server that processes Kuru Orderbook events 
     ```
 
 2.  **Environment Variables:**
-    Copy the `.env.example` file to `.env` and fill in your Confluent Cloud Kafka credentials and desired server port:
+    Create a `.env` file with the following variables:
     ```bash
-    cp .env.example .env
-    ```
-    *   `BOOTSTRAP_SERVERS`: Your Confluent Cloud bootstrap server address.
-    *   `CLUSTER_API_KEY`: Your Confluent Cloud API key.
-    *   `CLUSTER_API_SECRET`: Your Confluent Cloud API secret.
-    *   `PORT`: The port the WebSocket server should listen on (default: 8080).
+    # Server Configuration
+    PORT=8080
 
-3.  **Build the server:**
+    # Database Configuration (PostgreSQL via Neon or any Postgres provider)
+    DATABASE_URL=postgresql://username:password@host:port/database
+
+    # Kafka Configuration (Allium Datastreams)
+    BOOTSTRAP_SERVERS=your-kafka-bootstrap-server
+    CLUSTER_API_KEY=your-cluster-api-key
+    CLUSTER_API_SECRET=your-cluster-api-secret
+    ```
+
+3.  **Database Setup:**
+    
+    **Generate and run database migrations:**
+    ```bash
+    npm run db:generate
+    npm run db:push
+    ```
+    
+    **Alternative: Use Drizzle migration commands:**
+    ```bash
+    npm run db:migrate
+    ```
+
+4.  **Build the server:**
     ```bash
     npm run build
     ```
 
-4.  **Run the server:**
+5.  **Run the server:**
     *   **Development:**
         ```bash
         npm run dev
@@ -39,6 +58,36 @@ This directory contains a WebSocket server that processes Kuru Orderbook events 
         ```bash
         npm start
         ```
+
+## Database Schema
+
+The server uses a `trade` table with the following structure:
+
+```sql
+CREATE TABLE trade (
+  id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+  transaction_hash TEXT,
+  block_height NUMERIC(78, 0),
+  order_book_address TEXT,
+  order_id NUMERIC(78, 0),
+  tx_origin TEXT,
+  maker_address TEXT,
+  taker_address TEXT,
+  is_buy BOOLEAN,
+  price NUMERIC(78, 0),
+  updated_size NUMERIC(78, 0),
+  filled_size NUMERIC(78, 0)
+);
+```
+
+## Architecture
+
+1. **Kafka Consumer**: Consumes events from Allium Datastream
+2. **Event Processing**: Decodes and validates Trade events
+3. **WebSocket Broadcasting**: Sends events to connected clients
+4. **Database Persistence**: Saves events to PostgreSQL using Drizzle ORM
+
+The system is designed to continue operating even if database operations fail, ensuring WebSocket functionality remains available.
 
 ## Connecting
 

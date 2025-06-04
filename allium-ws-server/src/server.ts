@@ -15,8 +15,20 @@ import {
     KafkaConfig
 } from './types';
 import tradingPairsConfig from '../config/trading-pairs.json';
+import { DbService } from './services/db.service';
 
 dotenv.config();
+
+// Validate required environment variables
+if (!process.env.DATABASE_URL) {
+    console.error('Missing required environment variable: DATABASE_URL');
+    process.exit(1);
+}
+
+if (!process.env.BOOTSTRAP_SERVERS || !process.env.CLUSTER_API_KEY || !process.env.CLUSTER_API_SECRET) {
+    console.error('Missing required Kafka configuration in environment variables');
+    process.exit(1);
+}
 
 // Create contract instance
 const kuruOrderBookContract = new ethers.Contract('0x0000000000000000000000000000000000000000', kuruOrderBookABI);
@@ -183,7 +195,7 @@ class EventStreamServer {
      */
     private async initializeKafkaHandlers() {
         try {
-            this.kafkaConsumer.on('data' as KafkaConsumerEvents, (message: KafkaMessage) => {
+            this.kafkaConsumer.on('data' as KafkaConsumerEvents, async (message: KafkaMessage) => {
                 try {
                     if (!message.value) {
                         console.warn('Received message with null value');
@@ -195,7 +207,18 @@ class EventStreamServer {
 
                     if (processedEvent) {
                         console.log(`Processed event: type=${processedEvent.type}, block=${processedEvent.blockNumber}`);
+                        
+                        // Broadcast to WebSocket clients
                         this.broadcast(processedEvent);
+                        
+                        // Database save with proper error propagation
+                        try {
+                            await DbService.saveTradeEvent(processedEvent);
+                        } catch (dbError) {
+                            console.error(`[${new Date().toISOString()}] Database save failed for event:`, dbError);
+                            // Re-throw to signal failure to Kafka/Allium for retry logic
+                            throw dbError;
+                        }
                     }
                 } catch (error) {
                     console.error('Error processing message:', error);
