@@ -1,22 +1,11 @@
+/**
+ * Trading pairs configuration for Kuru OrderBook indexing
+ */
 export const tradingPairs = [
   {
     name: "MONUSDC",
     address: "0xD3AF145f1Aa1A471b5f0F62c52Cf8fcdc9AB55D3",
-    startBlock: 6294247,
+    startBlock: 20035908,
   },
-  {
-    name: "DAKMON",
-    address: "0x94B72620e65577De5FB2b8a8B93328CAf6Ca161b",
-    startBlock: 6294247,
-  },
-  {
-    name: "CHOGMON",
-    address: "0x277bF4a0AAc16f19d7bf592FeFFc8D2d9a890508",
-    startBlock: 6294247,
-  },
-  {
-    name: "YAKIMON",
-    address: "0xD5C1Dc181c359f0199c83045A85Cd2556B325De0",
-    startBlock: 6294247,
-  },
+  // Add more contract addresses here for additional trading pairs
 ];

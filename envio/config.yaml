@@ -5,14 +5,12 @@ networks:
   rpc: # RPC endpoints as fallback providers for added resillience
   - url: https://testnet-rpc.monad.xyz
     for: fallback
-  start_block: 14878237
+  start_block: 20035908
   contracts:
   - name: KuruOrderBook
     address:
     - 0xD3AF145f1Aa1A471b5f0F62c52Cf8fcdc9AB55D3
-    - 0x94B72620e65577De5FB2b8a8B93328CAf6Ca161b
-    - 0x277bF4a0AAc16f19d7bf592FeFFc8D2d9a890508
-    - 0xD5C1Dc181c359f0199c83045A85Cd2556B325De0
+    # Add more contract addresses here
     handler: src/EventHandlers.ts
     events:
     - event: Trade(uint40 orderId, address makerAddress, bool isBuy, uint256 price, uint96 updatedSize, address takerAddress, address txOrigin, uint96 filledSize)

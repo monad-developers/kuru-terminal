@@ -83,9 +83,7 @@ async function main(stream) {
   // Map of Kuru orderbook contract addresses and their trading pair names
   const kuruOrderbookAddresses = new Set([
     "0xd3af145f1aa1a471b5f0f62c52cf8fcdc9ab55d3", // MONUSDC
-    "0x94b72620e65577de5fb2b8a8b93328caf6ca161b", // DAKMON 
-    "0x277bf4a0aac16f19d7bf592feffc8d2d9a890508", // CHOGMON  
-    "0xd5c1dc181c359f0199c83045a85cd2556b325de0" // YAKIMON
+    // Add more contract addresses here for additional trading pairs
   ]);
   
   // Array to collect logs only from Kuru orderbook contracts
