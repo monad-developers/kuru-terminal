@@ -1,10 +1,20 @@
 import { WebSocket, WebSocketServer } from 'ws';
+import { IncomingMessage } from 'http';
 import { KuruEvents } from '../types';
 
 // Extended WebSocket interface with the isAlive flag for heartbeat
 interface WSClient extends WebSocket {
   isAlive: boolean;
 }
+
+// CORS Configuration
+const getAllowedOrigin = (): string => {
+  const frontendUrl = process.env.FRONTEND_URL;
+  if (!frontendUrl) {
+    throw new Error('Missing required environment variable: FRONTEND_URL');
+  }
+  return frontendUrl;
+};
 
 /**
  * WebSocket stream service for broadcasting Kuru events to connected clients
@@ -22,14 +32,21 @@ export class EventWsStream {
   }
 
   /**
-   * Creates a WebSocket server instance
+   * Creates a WebSocket server instance with CORS protection
    */
   private createWebSocketServer(port: number): WebSocketServer {
+    const allowedOrigin = getAllowedOrigin();
+    
     return new WebSocketServer({ 
       port,
-      verifyClient: () => {
-        // Allow all origins
-        return true;
+      verifyClient: (info: { origin: string; secure: boolean; req: IncomingMessage }) => {
+        if (info.origin === allowedOrigin) {
+          console.log(`WebSocket connection allowed from origin: ${info.origin}`);
+          return true;
+        } else {
+          console.warn(`WebSocket connection rejected from origin: ${info.origin}`);
+          return false;
+        }
       }
     });
   }
