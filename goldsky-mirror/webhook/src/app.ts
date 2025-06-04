@@ -91,10 +91,7 @@ expressApp.post("/", async (req, res) => {
     try {
       const eventWsStream = eventWsManager.getWsStream();
       eventWsStream.broadcastEvents(events);
-      const clientCount = eventWsStream.getConnectedClientCount();
-      if (clientCount > 0) {
-        console.log(`[${new Date().toISOString()}] Events broadcast to ${clientCount} connected clients`);
-      }
+      console.log(`[${new Date().toISOString()}] Events broadcast to connected clients`);
     } catch (error) {
       console.error(`[${new Date().toISOString()}] Error broadcasting events:`, error);
       // Continue processing even if broadcasting fails

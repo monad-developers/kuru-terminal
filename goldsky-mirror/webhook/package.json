@@ -6,7 +6,8 @@
     "build": "tsc --outDir dist",
     "start": "node dist/src/server.js",
     "dev": "ts-node src/server.ts",
-    "test": "ts-node tests/client.ts"
+    "test": "ts-node tests/client.ts",
+    "koyeb:deploy": "koyeb deploy . kuru-indexer-gs-mirror/kuru-indexer-gs-mirror-hook"
   },
   "dependencies": {
     "@neondatabase/serverless": "^0.10.4",
