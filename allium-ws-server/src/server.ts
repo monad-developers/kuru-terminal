@@ -3,6 +3,7 @@ import { ethers } from 'ethers';
 import { KafkaConsumer } from '@confluentinc/kafka-javascript';
 import kuruOrderBookABI from './abis/KuruOrderBook.json';
 import * as dotenv from 'dotenv';
+import { IncomingMessage } from 'http';
 import {
     SUPPORTED_EVENTS,
     SupportedEvent,
@@ -21,14 +22,17 @@ dotenv.config();
 
 // Validate required environment variables
 if (!process.env.DATABASE_URL) {
-    console.error('Missing required environment variable: DATABASE_URL');
-    process.exit(1);
+    throw new Error('Missing required environment variable: DATABASE_URL');
 }
 
-if (!process.env.BOOTSTRAP_SERVERS || !process.env.CLUSTER_API_KEY || !process.env.CLUSTER_API_SECRET) {
-    console.error('Missing required Kafka configuration in environment variables');
-    process.exit(1);
-}
+// CORS Configuration
+const getAllowedOrigin = (): string => {
+    const frontendUrl = process.env.FRONTEND_URL;
+    if (!frontendUrl) {
+        throw new Error('Missing required environment variable: FRONTEND_URL');
+    }
+    return frontendUrl;
+};
 
 // Create contract instance
 const kuruOrderBookContract = new ethers.Contract('0x0000000000000000000000000000000000000000', kuruOrderBookABI);
@@ -59,8 +63,8 @@ class EventStreamServer {
         this.validContractAddresses = new Set(
             tradingPairsConfig.tradingPairs.map(pair => pair.address.toLowerCase())
         );
-        
-        console.log(`Filtering Trade events for ${this.validContractAddresses.size} contract addresses:`, 
+
+        console.log(`Filtering Trade events for ${this.validContractAddresses.size} contract addresses:`,
             Array.from(this.validContractAddresses));
 
         this.initializeWebSocketHandlers();
@@ -94,14 +98,21 @@ class EventStreamServer {
     }
 
     /**
-     * Creates WebSocket server instance with default configuration
+     * Creates WebSocket server instance with CORS protection
      */
     private static createWebSocketServer(): WebSocketServer {
-        return new WebSocketServer({ 
+        const allowedOrigin = getAllowedOrigin();
+
+        return new WebSocketServer({
             port: Number(process.env.PORT) || 8080,
-            verifyClient: () => {
-                // Allow all origins
-                return true;
+            verifyClient: (info: { origin: string; secure: boolean; req: IncomingMessage }) => {
+                if (info.origin === allowedOrigin) {
+                    console.log(`WebSocket connection allowed from origin: ${info.origin}`);
+                    return true;
+                } else {
+                    console.warn(`WebSocket connection rejected from origin: ${info.origin}`);
+                    return false;
+                }
             }
         });
     }
@@ -149,7 +160,7 @@ class EventStreamServer {
      */
     private initializeWebSocketHandlers() {
         console.log('WebSocket server initialized and listening for connections...');
-        
+
         this.wss.on('connection', (ws: WebSocket) => {
             console.log('New client connected');
             const client = ws as WSClient;
@@ -207,10 +218,10 @@ class EventStreamServer {
 
                     if (processedEvent) {
                         console.log(`Processed event: type=${processedEvent.type}, block=${processedEvent.blockNumber}`);
-                        
+
                         // Broadcast to WebSocket clients
                         this.broadcast(processedEvent);
-                        
+
                         // Database save with proper error propagation
                         try {
                             await DbService.saveTradeEvent(processedEvent);
