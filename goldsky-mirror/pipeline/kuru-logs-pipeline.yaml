@@ -9,7 +9,7 @@ sources:
     filter: >-
         address = '0xd3af145f1aa1a471b5f0f62c52cf8fcdc9ab55d3'
         # Add more addresses here separated by 'OR'
-    start_at: earliest
+    start_at: latest
 transforms: {}
 sinks:
   sink_1:
