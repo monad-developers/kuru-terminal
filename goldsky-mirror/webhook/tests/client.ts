@@ -1,3 +1,9 @@
+/*
+  Tests seem to be inconsistently available across implementations
+  
+  Can we either get rid of them altogether or make tests available for all implementations?
+*/
+
 import dotenv from "dotenv";
 dotenv.config();
 

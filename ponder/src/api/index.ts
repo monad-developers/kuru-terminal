@@ -1,3 +1,7 @@
+/*
+    Does this need to be in its own folder?
+*/
+
 import { db } from "ponder:api";
 import schema from "ponder:schema";
 import { Hono } from "hono";

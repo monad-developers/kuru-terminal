@@ -1,3 +1,9 @@
+/*
+  There's quite a few files of boilerplate for the websocket server and implementation
+
+  Is it possible to unify this into a shared module that all the implementations can use?
+*/
+
 import { expressApp, eventWsManager } from "./app";
 
 const WEBHOOK_PORT = Number(process.env.WEBHOOK_PORT) || 3000;

@@ -1,3 +1,14 @@
+1. A concern I have is that the various indexer implementations are not exactly equivalent in terms of sophistication 
+    - For example, the `subgraph`, `ponder`, and `envio` implementations simply write events to their respective data stores, which is then polled by the frontend - totally fine and practical for our purposes
+    - However, the `qn-streams`, `thirdweb-insights-api`, `goldsky-mirror` and `allium-ws-server` implementations take things a step further by exposing websocket servers which can broadcast messages to clients, which means the frontend doesn't need to poll the data store
+    - This is of course a really great approach and should be our recommendation for building high performance apps, but I don't sense it's valid to compare these to the simpler implementations mentioned above
+    - For the `subgraph` implementation, I don't think it's necessary (or possible) to implement the websocket server alongside the indexing, so that's fine. But for `ponder` and `envio` I *think* it's possible to integrate the WS server alongside
+    - My point is basically that if we're willing to go through the effort of making the WS server for some of these implementations, we should probably do it for all of them - where possible - since we will want apps to do the same
+
+2. I see mixed usage of `console.log` and a proper logging tool, should reconcile these where possible
+3. I see the same config file is used across many of the implementations, can we move this into a single shared file?
+4. Same point as above for the contract ABI, this can be shared as well
+
 # Kuru Terminal
 
 A reference implementation showcasing best practices for indexing Kuru orderbook contracts using multiple indexing services on Monad.

@@ -30,6 +30,7 @@ The Express server processes blockchain data from the Goldsky pipeline:
 - Broadcasts events via WebSocket to connected clients
 - Stores events in a PostgreSQL database
 
+Can we include a brief mention of the websocket service at the top?
 ### WebSocket Service
 
 The server includes a WebSocket service for real-time event broadcasting:
@@ -74,6 +75,7 @@ The server includes a WebSocket service for real-time event broadcasting:
 
 A Dockerfile is also provided for containerized deployment.
 
+Can we document the message types that come through the WS? Same for all other implementations that expose a server
 ## WebSocket Client Connection
 
 To connect to the WebSocket server and receive real-time Trade events:
