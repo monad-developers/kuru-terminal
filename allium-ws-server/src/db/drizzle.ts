@@ -1,3 +1,7 @@
+/*
+    Lots of boilerplate for DB specification, would be nice if we could share this across implementations
+*/
+
 import { config } from "dotenv";
 import { drizzle } from "drizzle-orm/neon-http";
 

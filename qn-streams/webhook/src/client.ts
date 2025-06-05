@@ -1,5 +1,7 @@
 // test-client.ts
-
+/*
+  This appears to be more of a test file rather than something to be used, can we label it as such or remove it?
+*/
 import { ethers } from "ethers";
 import fetch from "node-fetch";
 import kuruOrderBookABI from "./abis/KuruOrderBook.json";
