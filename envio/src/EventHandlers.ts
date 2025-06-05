@@ -25,6 +25,9 @@ KuruOrderBook.Trade.handler(async ({ event, context }) => {
   context.KuruOrderBook_Trade.set(entity);
 });
 
+/*
+  Can this be removed?
+*/
 // Note: To add handlers for additional events:
 // 1. Import the new event type from generated:
 // import { KuruOrderBook_OrderCreated } from "generated";

@@ -1,3 +1,6 @@
+1. This readme is missing a mention of the WS server and message types
+2. Can we move the source code out of the `webhook/` folder and into this directory?
+
 # Kuru Quicknode Streams Webhook
 
 This folder contains the components needed to process and index KuruOrderBook contract events (Trade) using Quicknode Streams.
